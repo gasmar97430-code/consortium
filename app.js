@@ -166,7 +166,7 @@ class ConsortiumApp {
         if (path) this.state.currentPath = path;
         this.saveToStorage();
         
-        this.pageTitle.innerText = "Explorateur";
+        this.pageTitle.innerText = "Tableau de bord";
         this.blocksContainer.innerHTML = '';
         this.blocksContainer.className = "lg:col-span-2 flex flex-col lg:flex-row gap-6 w-full min-h-[500px] bg-[#0b0e14] border border-white/5 rounded-3xl overflow-hidden mb-20";
 
