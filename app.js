@@ -383,8 +383,11 @@ class ConsortiumApp {
 
     checkVersion() {
         const lastVersion = localStorage.getItem('app_version');
-        if (lastVersion && lastVersion !== this.version) {
-            console.log("Nouvelle version détectée : " + this.version + ". Rafraîchissement...");
+        const currentVersion = parseFloat(this.version);
+        const storedVersion = parseFloat(lastVersion || "0");
+
+        if (lastVersion && currentVersion > storedVersion) {
+            console.log("Nouvelle version détectée : " + this.version + ". Mise à jour...");
             localStorage.setItem('app_version', this.version);
             location.reload();
         } else {
