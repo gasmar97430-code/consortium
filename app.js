@@ -173,7 +173,9 @@ class ConsortiumApp {
         this.pageTitle.innerText = page.title;
         this.blocksContainer.innerHTML = '';
 
-        if (this.state.currentPage === 'projects') {
+        if (this.state.currentPage === 'home') {
+            this.renderDashboard();
+        } else if (this.state.currentPage === 'projects') {
             this.renderProjects();
         } else if (this.state.currentPage === 'chat') {
             this.renderChat();
@@ -185,159 +187,170 @@ class ConsortiumApp {
         }
     }
 
-    renderProjects() {
+    renderDashboard() {
+        // To-do List Card
+        const todoCard = this.createCard('To-do List', '📝');
+        const todoList = document.createElement('div');
+        todoList.className = 'space-y-3';
+        const tasks = [
+            { text: 'Collater une commentiale', checked: true, tag: '🚩' },
+            { text: 'Eviter des missions', checked: false, tag: '4 mon', tagColor: 'text-pink-500' },
+            { text: 'Resquer les doaveloppnoets', checked: false, tag: '12 mar' },
+            { text: 'Contir la scontent', checked: false, tag: '23 mas' }
+        ];
+        tasks.forEach(t => {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-all';
+            item.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" ${t.checked ? 'checked' : ''} class="w-5 h-5 accent-accent">
+                    <span class="text-sm ${t.checked ? 'line-through text-gray-600' : 'text-gray-300'}">${t.text}</span>
+                </div>
+                <span class="text-[10px] uppercase font-bold ${t.tagColor || 'text-gray-600'}">${t.tag}</span>
+            `;
+            todoList.appendChild(item);
+        });
+        todoCard.querySelector('.card-content').appendChild(todoList);
+        this.blocksContainer.appendChild(todoCard);
+
+        // Project Progress Card
+        const progressCard = this.createCard('Project Progress', '📊');
+        const progressList = document.createElement('div');
+        progressList.className = 'space-y-6';
         const projects = [
-            { name: 'DOC_JUCE', progress: 65 },
-            { name: 'FICHIER POUR APP', progress: 40 },
-            { name: 'Projets', progress: 20 },
-            { name: 'taches_journaliere', progress: 95 },
-            { name: 'MES IDS', progress: 10 },
-            { name: 'IMAG_ICON', progress: 80 }
+            { name: 'Current project', progress: 80 },
+            { name: 'Project progress', progress: 50 },
+            { name: 'Dainert project', progress: 75 }
+        ];
+        projects.forEach(p => {
+            const item = document.createElement('div');
+            item.innerHTML = `
+                <div class="flex justify-between text-xs mb-2">
+                    <span class="text-gray-400">${p.name}</span>
+                    <span class="text-gray-200">${p.progress}%</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent" style="width: ${p.progress}%"></div>
+                </div>
+            `;
+            progressList.appendChild(item);
+        });
+        progressCard.querySelector('.card-content').appendChild(progressList);
+        this.blocksContainer.appendChild(progressCard);
+    }
+
+    renderProjects() {
+        const projectsCard = this.createCard('All Projects', '📁');
+        const list = document.createElement('div');
+        list.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+        
+        const projects = [
+            { name: 'DOC_JUCE', progress: 65, status: 'Active' },
+            { name: 'FICHIER APP', progress: 40, status: 'Pending' },
+            { name: 'Studio Mobile', progress: 95, status: 'Review' },
+            { name: 'Consortium', progress: 80, status: 'Live' }
         ];
 
         projects.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'project-card';
-            card.innerHTML = `
-                <div class="project-header">
-                    <strong>${p.name}</strong>
-                    <span>${p.progress}%</span>
+            const item = document.createElement('div');
+            item.className = 'p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/30 transition-all';
+            item.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-sm">${p.name}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent uppercase font-bold">${p.status}</span>
                 </div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: ${p.progress}%"></div>
+                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-accent shadow-[0_0_10px_rgba(125,95,255,0.5)]" style="width: ${p.progress}%"></div>
                 </div>
             `;
-            this.blocksContainer.appendChild(card);
+            list.appendChild(item);
         });
+        projectsCard.querySelector('.card-content').appendChild(list);
+        this.blocksContainer.appendChild(projectsCard);
     }
 
     renderChat() {
         const page = this.state.pages.chat;
-        const chatContainer = document.createElement('div');
-        chatContainer.className = 'flex flex-col gap-4';
+        const chatCard = this.createCard('AI Assistant', '🤖');
+        chatCard.className += ' lg:col-span-2'; // Chat takes full width
+        
+        const container = document.createElement('div');
+        container.className = 'flex flex-col gap-6 h-[400px] overflow-y-auto no-scrollbar mb-6 p-2';
         
         page.messages.forEach(msg => {
             const div = document.createElement('div');
-            div.className = `max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'self-end bg-accent text-white' : 'self-start bg-white/5 border border-white/10'}`;
+            div.className = `max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'self-end bg-accent text-white shadow-lg shadow-accent/20' : 'self-start bg-white/5 border border-white/10 text-gray-300'}`;
             div.innerText = msg.text;
-            chatContainer.appendChild(div);
+            container.appendChild(div);
         });
 
-        const inputArea = document.createElement('div');
-        inputArea.className = 'mt-8 sticky bottom-0 bg-dark/80 glass-blur pt-4';
+        const inputWrapper = document.createElement('div');
+        inputWrapper.className = 'relative flex items-center';
         const input = document.createElement('input');
-        input.className = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition-all';
-        input.placeholder = 'Message à Antigravity...';
+        input.className = 'w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-accent/50 transition-all pr-12';
+        input.placeholder = 'Type a message...';
+        
+        const sendBtn = document.createElement('button');
+        sendBtn.className = 'absolute right-4 text-accent hover:scale-110 transition-transform';
+        sendBtn.innerHTML = '➤';
 
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && input.value) {
-                const userText = input.value;
-                page.messages.push({role: 'user', text: userText});
-                input.value = '';
-                
-                // Simulate Antigravity response
-                setTimeout(() => {
-                    page.messages.push({role: 'bot', text: `J'ai bien reçu votre message concernant "${userText}". Je surveille l'avancement de vos projets dans le Lab.`});
-                    this.render();
-                    this.saveToStorage();
-                }, 1000);
-
+        const sendMessage = () => {
+            if (!input.value.trim()) return;
+            const text = input.value;
+            page.messages.push({role: 'user', text});
+            input.value = '';
+            this.render();
+            
+            setTimeout(() => {
+                page.messages.push({role: 'bot', text: "Analyzing your request... Everything is synced in the Consortium."});
                 this.render();
                 this.saveToStorage();
-            }
-        });
+            }, 800);
+            this.saveToStorage();
+        };
 
-        this.blocksContainer.appendChild(chatContainer);
-        this.blocksContainer.appendChild(inputArea);
-        inputArea.appendChild(input);
+        input.addEventListener('keydown', (e) => e.key === 'Enter' && sendMessage());
+        sendBtn.addEventListener('click', sendMessage);
+
+        chatCard.querySelector('.card-content').appendChild(container);
+        chatCard.querySelector('.card-content').appendChild(inputWrapper);
+        inputWrapper.appendChild(input);
+        inputWrapper.appendChild(sendBtn);
+        
+        this.blocksContainer.appendChild(chatCard);
+    }
+
+    createCard(title, icon) {
+        const div = document.createElement('div');
+        div.className = 'card-glass p-6 flex flex-col gap-6';
+        div.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">${icon}</span>
+                    <h3 class="font-bold text-lg">${title}</h3>
+                </div>
+                <button class="text-gray-600 hover:text-white">•••</button>
+            </div>
+            <div class="card-content"></div>
+        `;
+        return div;
     }
 
     createBlockElement(block, index) {
-        const div = document.createElement('div');
-        div.className = `group relative p-2 rounded-lg transition-all hover:bg-white/5`;
+        const card = this.createCard(block.type.toUpperCase(), '📄');
+        const content = card.querySelector('.card-content');
         
-        if (block.type === 'todo') {
-            div.innerHTML = `
-                <div class="flex items-start gap-3">
-                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="mt-1 w-5 h-5 accent-accent cursor-pointer">
-                    <div class="flex-1">
-                        <div contenteditable="true" class="todo-text outline-none ${block.checked ? 'line-through text-gray-500' : ''}">${block.content}</div>
-                        <button class="toggle-notes text-[11px] text-accent/70 mt-1 hover:text-accent uppercase tracking-widest font-bold flex items-center gap-1">
-                            <span>📝</span> Notes
-                        </button>
-                        <div class="notes-container ${block.notes ? '' : 'hidden'} mt-2">
-                            <textarea class="w-full bg-black/20 border border-white/5 rounded-lg p-2 text-sm text-gray-400 outline-none focus:border-accent/30" placeholder="Notes riches...">${block.notes || ''}</textarea>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const checkbox = div.querySelector('input');
-            const text = div.querySelector('.todo-text');
-            const toggle = div.querySelector('.toggle-notes');
-            const notesArea = div.querySelector('textarea');
-            const notesContainer = div.querySelector('.notes-container');
-
-            checkbox.addEventListener('change', () => {
-                block.checked = checkbox.checked;
-                text.classList.toggle('line-through', block.checked);
-                text.classList.toggle('text-gray-500', block.checked);
-                this.saveToStorage();
-            });
-
-            text.addEventListener('input', () => {
-                block.content = text.innerText;
-                this.saveToStorage();
-            });
-
-            toggle.addEventListener('click', () => notesContainer.classList.toggle('hidden'));
-            
-            notesArea.addEventListener('input', () => {
-                block.notes = notesArea.value;
-                this.saveToStorage();
-            });
-
-        } else if (block.type === 'table') {
-            const table = document.createElement('table');
-            table.className = 'w-full border-collapse border border-white/10 text-sm mt-4 rounded-xl overflow-hidden';
-            
-            block.content.forEach((row, rIdx) => {
-                const tr = document.createElement('tr');
-                row.forEach((cell, cIdx) => {
-                    const el = rIdx === 0 ? document.createElement('th') : document.createElement('td');
-                    el.className = `border border-white/10 p-3 text-left ${rIdx === 0 ? 'bg-white/5 text-gray-400 uppercase text-[10px] tracking-widest' : ''}`;
-                    el.contentEditable = true;
-                    el.innerText = cell;
-                    el.addEventListener('input', () => {
-                        block.content[rIdx][cIdx] = el.innerText;
-                        this.saveToStorage();
-                    });
-                    tr.appendChild(el);
-                });
-                table.appendChild(tr);
-            });
-            div.appendChild(table);
-        } else if (block.type === 'header') {
-            div.innerHTML = `<div contenteditable="true" class="text-2xl font-bold mt-6 mb-2 outline-none">${block.content}</div>`;
-            div.querySelector('div').addEventListener('input', (e) => {
-                block.content = e.target.innerText;
-                this.saveToStorage();
-            });
-        } else {
-            div.innerHTML = `<div contenteditable="true" class="outline-none text-gray-300 leading-relaxed">${block.content}</div>`;
-            div.querySelector('div').addEventListener('input', (e) => {
-                block.content = e.target.innerText;
-                this.saveToStorage();
-            });
-        }
-
-        // Handle
-        const handle = document.createElement('div');
-        handle.className = 'absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-50 cursor-grab text-gray-600 text-xs';
-        handle.innerText = '⋮⋮';
-        div.appendChild(handle);
-
-        return div;
+        const editor = document.createElement('div');
+        editor.contentEditable = true;
+        editor.className = 'outline-none text-gray-300 min-h-[100px]';
+        editor.innerText = block.content;
+        editor.addEventListener('input', () => {
+            block.content = editor.innerText;
+            this.saveToStorage();
+        });
+        
+        content.appendChild(editor);
+        return card;
     }
 
     saveToStorage() {
