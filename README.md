@@ -23,5 +23,10 @@ Une interface **Masterwork** basée sur le glassmorphism profond, des accents n�
 2. Ouvrez l'URL sur votre téléphone.
 3. Ajoutez à l'écran d'accueil.
 
+## 🛡️ Protocole de Validation à Distance
+Le Consortium permet de valider des actions système sur votre PC depuis votre mobile via des commandes textuelles simples :
+- **Validation** : Répondez par `OUI`, `ACCEPT`, `YES` ou `RUN` pour confirmer un lancement.
+- **Sécurité** : Aucune action critique n'est exécutée sans votre accord explicite dans le chat.
+
 ---
 *Finition Masterwork par Antigravity - Votre binôme IA*
