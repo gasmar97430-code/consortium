@@ -36,4 +36,14 @@ Ce guide vous explique comment mettre votre Consortium en ligne gratuitement pou
 2.  **Sur Android (Chrome) :** Cliquez sur les trois petits points en haut à droite et choisissez **"Installer l'application"** ou **"Ajouter à l'écran d'accueil"**.
 3.  **Sur iPhone (Safari) :** Cliquez sur l'icône de partage (le carré avec une flèche vers le haut) et choisissez **"Sur l'écran d'accueil"**.
 
+## Étape 4 : Forcer la mise à jour sur Mobile
+
+Si vous ne voyez pas les dernières modifications (le design ne change pas), c'est que le cache du Service Worker est bloqué.
+
+1.  **Méthode Rapide** : Rafraîchissez la page en glissant vers le bas.
+2.  **Méthode Radicale** : 
+    - Fermez complètement l'application.
+    - Videz l'onglet Chrome/Safari ou désinstallez/réinstallez l'icône de l'écran d'accueil.
+3.  **Note technique** : Antigravity incrémente automatiquement la version dans `sw.js` pour forcer cette mise à jour.
+
 L'application apparaîtra maintenant comme une icône sur votre téléphone, fonctionnera en plein écran et pourra même être utilisée hors ligne grâce au Service Worker !
