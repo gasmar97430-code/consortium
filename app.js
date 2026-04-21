@@ -195,10 +195,10 @@ class ConsortiumApp {
             <div class="flex gap-2">
                 <button onclick="window.app.renderProjects('D:\\\\lab')" class="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center text-gray-400 hover:text-white transition-all">↑</button>
             </div>
-            <div class="flex-1 bg-black/40 rounded-lg px-4 py-2 text-[10px] font-mono text-gray-400 flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap border border-white/5">
+            <div class="flex-1 bg-black/60 rounded-lg px-4 py-2 text-[11px] font-mono text-gray-100 flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap border border-white/10 shadow-inner">
                 ${this.state.currentPath.split('\\').filter(x => x).map((p, i, arr) => `
-                    <span class="hover:text-accent cursor-pointer" onclick="window.app.renderProjects('${arr.slice(0, i+1).join('\\\\')}')">${p}</span>
-                `).join('<span class="text-gray-700 mx-1"> > </span>')}
+                    <span class="hover:text-accent cursor-pointer transition-colors" onclick="window.app.renderProjects('${arr.slice(0, i+1).join('\\\\')}')">${p}</span>
+                `).join('<span class="text-gray-500 mx-2 font-bold text-base">›</span>')}
             </div>
         `;
 
@@ -233,12 +233,14 @@ class ConsortiumApp {
                 ${currentFolders.map(name => `
                     <tr class="hover:bg-accent/5 transition-all group">
                         <td class="p-4 flex items-center gap-3 cursor-pointer" onclick="window.app.renderProjects('${this.state.currentPath + (this.state.currentPath.endsWith('\\') ? '' : '\\') + name}')">
-                            <span class="text-lg">📁</span>
-                            <span class="text-gray-300 font-semibold group-hover:text-accent transition-colors">${name}</span>
+                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl group-hover:bg-accent/20 transition-all shadow-inner">📁</div>
+                            <span class="text-gray-300 font-bold group-hover:text-accent transition-colors tracking-tight">${name}</span>
                         </td>
-                        <td class="p-4 text-gray-600 hidden md:table-cell">${name.toLowerCase().includes('app') ? 'System App' : 'Project Folder'}</td>
+                        <td class="p-4 text-gray-500 font-medium hidden md:table-cell uppercase text-[9px] tracking-widest">${name.toLowerCase().includes('app') ? 'System App' : 'Project Folder'}</td>
                         <td class="p-4 text-right">
-                            <button class="px-3 py-1.5 bg-accent/20 border border-accent/30 text-accent rounded-lg text-[9px] font-black uppercase hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/5">LANCER</button>
+                            <button class="px-6 py-2.5 bg-accent/20 border border-accent/30 text-accent rounded-xl text-[10px] font-black uppercase hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/5 hover:shadow-accent/20 active:scale-95">
+                                🚀 LANCER
+                            </button>
                         </td>
                     </tr>
                 `).join('')}
