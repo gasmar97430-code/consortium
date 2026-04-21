@@ -238,12 +238,15 @@ class ConsortiumApp {
         chatContainer.className = 'flex flex-col h-[450px]';
         
         chatContainer.innerHTML = `
-            <div class="flex items-center justify-between p-4 bg-accent/5 border border-accent/10 rounded-2xl mb-6">
+            <div class="flex flex-col md:flex-row items-center justify-between p-4 bg-accent/5 border border-accent/10 rounded-2xl mb-6 gap-3">
                 <div class="flex items-center gap-3">
                     <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
                     <span class="text-xs font-bold tracking-widest text-accent uppercase">Antigravity Connecté</span>
                 </div>
-                <span class="text-[10px] text-gray-500">PC : En attente de commandes...</span>
+                <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                    <span class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Sync Mode :</span>
+                    <span class="text-[9px] text-green-400 font-bold uppercase tracking-tighter animate-pulse">PC-Link Actif</span>
+                </div>
             </div>
             
             <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6 no-scrollbar">
