@@ -256,7 +256,7 @@ class ConsortiumApp {
                 
                 if (index !== null) {
                     this.state.notionBlocks.splice(index + 1, 0, newBlock);
-                    // Remove the '/' that triggered the menu
+                    // Remove the '/' and update state
                     if (this.state.notionBlocks[index].content.endsWith('/')) {
                         this.state.notionBlocks[index].content = this.state.notionBlocks[index].content.slice(0, -1);
                     }
@@ -265,8 +265,8 @@ class ConsortiumApp {
                 }
                 
                 menu.classList.add('hidden');
-                this.render();
                 this.saveToStorage();
+                this.render(); // Full re-render to clear '/' and show new block
             };
         });
     }
