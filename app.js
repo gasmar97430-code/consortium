@@ -38,6 +38,7 @@ class ConsortiumApp {
     }
 
     init() {
+        console.log('Consortium Engine v2.1 - Loading...');
         this.loadFromStorage();
         this.render();
         this.setupEventListeners();
@@ -191,53 +192,65 @@ class ConsortiumApp {
         // To-do List Card
         const todoCard = this.createCard('To-do List', '📝');
         const todoList = document.createElement('div');
-        todoList.className = 'space-y-3';
+        todoList.className = 'space-y-4';
         const tasks = [
             { text: 'Collater une commentiale', checked: true, tag: '🚩' },
             { text: 'Eviter des missions', checked: false, tag: '4 mon', tagColor: 'text-pink-500' },
-            { text: 'Resquer les doaveloppnoets', checked: false, tag: '🕒 12 mar' },
-            { text: 'Contir la scontent', checked: false, tag: '🕒 23 mas' },
-            { text: 'Deliter les profiction', checked: false, tag: '🕒 30 min' },
+            { text: 'Resquer les doaveloppnoets', checked: false, tag: '🕒 12 mar', tagColor: 'text-gray-500' },
+            { text: 'Contir la scontent', checked: false, tag: '🕒 23 mas', tagColor: 'text-gray-500' },
+            { text: 'Deliter les profiction', checked: false, tag: '🕒 30 min', tagColor: 'text-gray-500' },
             { text: 'Activer un fection', checked: false, tag: '🚩' }
         ];
         tasks.forEach(t => {
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/5';
+            item.className = 'flex items-center justify-between p-1 rounded-xl transition-all';
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <input type="checkbox" ${t.checked ? 'checked' : ''} class="w-6 h-6 rounded-lg bg-white/5 border-white/10 text-accent accent-accent focus:ring-0">
                     <span class="text-sm font-medium ${t.checked ? 'line-through text-gray-600' : 'text-gray-300'}">${t.text}</span>
                 </div>
-                <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-lg bg-white/5 ${t.tagColor || 'text-gray-500'}">${t.tag}</span>
+                <span class="text-[11px] font-bold ${t.tagColor || 'text-red-500'}">${t.tag}</span>
             `;
             todoList.appendChild(item);
         });
+        
+        const footerInput = document.createElement('div');
+        footerInput.className = 'mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-gray-600';
+        footerInput.innerHTML = `<span class="text-xs">Actions de mtrts...</span> <span class="text-sm">→</span>`;
+        
         todoCard.querySelector('.card-content').appendChild(todoList);
+        todoCard.querySelector('.card-content').appendChild(footerInput);
         this.blocksContainer.appendChild(todoCard);
 
         // Project Progress Card
         const progressCard = this.createCard('Project Progress', '📊');
         const progressList = document.createElement('div');
-        progressList.className = 'space-y-6';
+        progressList.className = 'space-y-8';
         const projects = [
             { name: 'Current project', progress: 80 },
-            { name: 'Project progress', progress: 50 },
+            { name: 'Project progress', progress: 20 },
             { name: 'Dainert project', progress: 75 }
         ];
         projects.forEach(p => {
             const item = document.createElement('div');
             item.innerHTML = `
-                <div class="flex justify-between text-xs mb-2">
-                    <span class="text-gray-400">${p.name}</span>
+                <div class="flex justify-between text-xs mb-3">
+                    <span class="text-gray-400 font-medium">${p.name}</span>
                     <span class="text-gray-200">${p.progress}%</span>
                 </div>
                 <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent" style="width: ${p.progress}%"></div>
+                    <div class="h-full bg-accent neon-bar" style="width: ${p.progress}%"></div>
                 </div>
             `;
             progressList.appendChild(item);
         });
+        
+        const actionBtn = document.createElement('button');
+        actionBtn.className = 'mt-10 w-fit px-6 py-3 bg-accent/20 border border-accent/20 text-accent rounded-2xl text-xs font-bold flex items-center gap-3 hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/10';
+        actionBtn.innerHTML = `<span class="text-lg">+</span> Recuperer`;
+        
         progressCard.querySelector('.card-content').appendChild(progressList);
+        progressCard.querySelector('.card-content').appendChild(actionBtn);
         this.blocksContainer.appendChild(progressCard);
     }
 
@@ -324,16 +337,18 @@ class ConsortiumApp {
 
     createCard(title, icon) {
         const div = document.createElement('div');
-        div.className = 'card-glass p-6 flex flex-col gap-6';
+        div.className = 'card-glass p-8 flex flex-col gap-6 group relative overflow-hidden';
         div.innerHTML = `
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">${icon}</span>
-                    <h3 class="font-bold text-lg">${title}</h3>
+            <div class="flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl shadow-inner border border-white/5">${icon}</div>
+                    <h3 class="font-bold text-xl tracking-tight text-white/90">${title}</h3>
                 </div>
-                <button class="text-gray-600 hover:text-white">•••</button>
+                <button class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-all">•••</button>
             </div>
-            <div class="card-content"></div>
+            <div class="card-content relative z-10"></div>
+            <!-- Background Decoration -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
         `;
         return div;
     }
