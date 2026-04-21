@@ -26,6 +26,7 @@ L'IA Antigravity s'engage à ne pas "tourner en bourrique" le Maître de l'ouvra
 - [x] **CYCLE 1 (v11.5)** : Nettoyage `app.js` (Explorer, Chat, Slash Commands).
 - [x] **CYCLE 2 (v11.6)** : Optimisation `sw.js` (Stratégie Network-First).
 - [x] **CYCLE 3 (v11.8)** : Finalisation `manifest.json` (Orientation & Identité).
+- [x] **CYCLE 4 (v11.9)** : Hiérarchie Visuelle (Z-index & Profondeur UI).
 
 ---
-*Dernière mise à jour : v11.8 - État : 🟢 OPÉRATIONNEL*
+*Dernière mise à jour : v11.9 - État : 🟢 OPÉRATIONNEL*
