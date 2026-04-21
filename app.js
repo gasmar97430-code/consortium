@@ -141,7 +141,8 @@ class ConsortiumApp {
 
     createNotionBlock(block, index) {
         const div = document.createElement('div');
-        div.className = 'group relative p-2 pl-10 rounded-xl hover:bg-white/5 transition-all min-h-[2rem] flex flex-col';
+        div.className = 'group relative p-2 pl-10 rounded-xl hover:bg-white/5 transition-all min-h-[2rem] flex flex-col animate-in fade-in slide-in-from-left-4 duration-500';
+        div.style.animationDelay = `${index * 50}px`;
         
         // Block Handle (The Notion '::')
         const handle = document.createElement('div');
@@ -544,9 +545,9 @@ class ConsortiumApp {
 
     createCard(title, icon) {
         const div = document.createElement('div');
-        div.className = 'card-glass p-6 md:p-8 flex flex-col gap-6 group relative overflow-hidden transition-all hover:border-white/10';
+        div.className = 'card-glass p-6 md:p-8 flex flex-col gap-6 group relative overflow-hidden transition-all hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]';
         div.innerHTML = `
-            <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center justify-between relative z-10 transition-transform group-hover:translate-x-1">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl shadow-inner border border-white/5 group-hover:bg-accent/10 transition-colors">${icon}</div>
                     <h3 class="font-bold text-lg md:text-xl tracking-tight text-white/90">${title}</h3>
