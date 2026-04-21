@@ -5,7 +5,7 @@ class ConsortiumApp {
             currentPath: 'D:\\lab\\Projets',
             pages: {
                 home: { title: 'Dashboard', icon: '🏠' },
-                projects: { title: 'Projects', icon: '📂' },
+                projects: { title: 'EXPLORER', icon: '📂' },
                 tasks: { title: 'Tasks', icon: '✅' },
                 ai: { title: 'Antigravity Assistant', icon: '🤖' },
                 calendar: { title: 'Calendar', icon: '📅' },

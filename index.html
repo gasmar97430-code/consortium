@@ -16,6 +16,10 @@
             darkMode: 'class',
             theme: {
                 extend: {
+                    pages: {
+                        home: { title: 'Dashboard', icon: '🏠' },
+                        projects: { title: 'EXPLORER', icon: '📂' },
+                    },
                     colors: {
                         dark: '#0b0e14',
                         accent: '#7d5fff',
@@ -102,7 +106,7 @@
                     </li>
                     <li data-page="projects" class="sidebar-item cursor-pointer p-2 rounded-2xl flex items-center gap-4 transition-all hover:bg-white/5 group">
                         <div class="w-12 h-12 rounded-xl bg-transparent border border-white/5 flex items-center justify-center text-xl group-hover:bg-white/5 transition-all">📂</div>
-                        <span class="font-medium text-gray-500 group-hover:text-white">Projects</span>
+                        <span class="font-medium text-gray-500 group-hover:text-white">EXPLORER</span>
                     </li>
                     <li data-page="tasks" class="sidebar-item cursor-pointer p-2 rounded-2xl flex items-center gap-4 transition-all hover:bg-white/5 group">
                         <div class="w-12 h-12 rounded-xl bg-transparent border border-white/5 flex items-center justify-center text-xl group-hover:bg-white/5 transition-all">✅</div>
@@ -150,7 +154,7 @@
                 </li>
                 <li data-page="projects" class="flex items-center gap-4 px-6 py-4 text-gray-500 hover:text-white hover:bg-white/5 rounded-2xl cursor-pointer group transition-all">
                     <span class="text-xl">📂</span>
-                    <span class="font-bold tracking-tight">Le Lab</span>
+                    <span class="font-bold tracking-tight uppercase">EXPLORER</span>
                 </li>
                 <li data-page="tasks" class="flex items-center gap-4 px-6 py-4 text-gray-500 hover:text-white hover:bg-white/5 rounded-2xl cursor-pointer group transition-all">
                     <span class="text-xl">✅</span>
@@ -226,9 +230,9 @@
                 <span class="text-xl md:text-2xl">✅</span>
                 <span class="text-[8px] md:text-[10px] uppercase font-bold tracking-tighter">Tasks</span>
             </button>
-            <button data-page="projects" class="nav-btn flex flex-col items-center gap-1 text-gray-500 flex-1">
+            <button data-page="projects" class="nav-btn flex flex-col items-center gap-1 text-gray-500 hover:text-accent flex-1">
                 <span class="text-xl md:text-2xl">📂</span>
-                <span class="text-[8px] md:text-[10px] uppercase font-bold tracking-tighter">Lab</span>
+                <span class="text-[8px] md:text-[10px] uppercase font-bold tracking-tighter">Explorer</span>
             </button>
             <button data-page="calendar" class="nav-btn flex flex-col items-center gap-1 text-gray-500 flex-1">
                 <span class="text-xl md:text-2xl">📅</span>
