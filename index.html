@@ -35,6 +35,18 @@
         h1, h2, h3 { font-family: 'Outfit', sans-serif; }
         .glass-blur { backdrop-filter: blur(12px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .premium-gradient {
+            background: linear-gradient(to right, #7d5fff, #ff5fcc, #7d5fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
     </style>
 </head>
 <body class="bg-dark text-gray-200 overflow-hidden h-screen flex">
@@ -93,7 +105,7 @@
 
         <!-- Scrollable Editor -->
         <section id="editor" class="flex-1 overflow-y-auto p-6 md:p-12 max-w-4xl mx-auto w-full no-scrollbar">
-            <h1 id="page-title" contenteditable="true" class="text-4xl font-bold mb-10 outline-none">Chargement...</h1>
+            <h1 id="page-title" contenteditable="true" class="text-4xl font-bold mb-10 outline-none premium-gradient">Chargement...</h1>
             <div id="blocks-container" class="space-y-4">
                 <!-- Blocks injected by JS -->
             </div>
