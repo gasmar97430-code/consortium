@@ -1,6 +1,6 @@
 class ConsortiumApp {
     constructor() {
-        this.version = "7.6";
+        this.version = "7.7";
         this.checkVersion();
 
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
