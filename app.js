@@ -195,18 +195,20 @@ class ConsortiumApp {
         const tasks = [
             { text: 'Collater une commentiale', checked: true, tag: '🚩' },
             { text: 'Eviter des missions', checked: false, tag: '4 mon', tagColor: 'text-pink-500' },
-            { text: 'Resquer les doaveloppnoets', checked: false, tag: '12 mar' },
-            { text: 'Contir la scontent', checked: false, tag: '23 mas' }
+            { text: 'Resquer les doaveloppnoets', checked: false, tag: '🕒 12 mar' },
+            { text: 'Contir la scontent', checked: false, tag: '🕒 23 mas' },
+            { text: 'Deliter les profiction', checked: false, tag: '🕒 30 min' },
+            { text: 'Activer un fection', checked: false, tag: '🚩' }
         ];
         tasks.forEach(t => {
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-all';
+            item.className = 'flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/5';
             item.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" ${t.checked ? 'checked' : ''} class="w-5 h-5 accent-accent">
-                    <span class="text-sm ${t.checked ? 'line-through text-gray-600' : 'text-gray-300'}">${t.text}</span>
+                <div class="flex items-center gap-4">
+                    <input type="checkbox" ${t.checked ? 'checked' : ''} class="w-6 h-6 rounded-lg bg-white/5 border-white/10 text-accent accent-accent focus:ring-0">
+                    <span class="text-sm font-medium ${t.checked ? 'line-through text-gray-600' : 'text-gray-300'}">${t.text}</span>
                 </div>
-                <span class="text-[10px] uppercase font-bold ${t.tagColor || 'text-gray-600'}">${t.tag}</span>
+                <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-lg bg-white/5 ${t.tagColor || 'text-gray-500'}">${t.tag}</span>
             `;
             todoList.appendChild(item);
         });

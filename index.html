@@ -54,16 +54,18 @@
         }
         
         .card-glass {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(30px);
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
         
         .card-glass:hover {
-            border-color: rgba(125, 95, 255, 0.2);
-            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(125, 95, 255, 0.15);
+            background: rgba(255, 255, 255, 0.025);
+            transform: translateY(-4px);
         }
 
         #sidebar.open { transform: translateX(0) !important; }
@@ -156,8 +158,8 @@
                 </button>
             </div>
             
-            <div id="blocks-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Cards injected by JS -->
+            <div id="blocks-container" class="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+                <!-- Les cartes (To-do, Projets) vont se mettre ici côte à côte -->
             </div>
             
             <div class="mt-8 opacity-0 hover:opacity-100 transition-opacity pb-24">
