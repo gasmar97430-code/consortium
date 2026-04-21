@@ -1,4 +1,4 @@
-# 🌌 Consortium Masterwork v3.5
+# 🌌 Consortium Masterwork v9.0
 
 Bienvenue dans le **Consortium**, votre centre de commande mobile intelligent développé en binôme avec **Antigravity AI**.
 
