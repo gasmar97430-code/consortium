@@ -133,33 +133,86 @@ class ConsortiumApp {
 
     createNotionBlock(block, index) {
         const div = document.createElement('div');
-        div.className = 'group relative p-2 rounded-xl hover:bg-white/5 transition-all min-h-[2rem]';
+        div.className = 'group relative p-2 pl-10 rounded-xl hover:bg-white/5 transition-all min-h-[2rem] flex flex-col';
         
+        // Block Handle (The Notion '::')
+        const handle = document.createElement('div');
+        handle.className = 'absolute left-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab text-gray-600 flex gap-0.5';
+        handle.innerHTML = `
+            <div class="flex flex-col gap-0.5">
+                <div class="w-1 h-1 bg-current rounded-full"></div><div class="w-1 h-1 bg-current rounded-full"></div><div class="w-1 h-1 bg-current rounded-full"></div>
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <div class="w-1 h-1 bg-current rounded-full"></div><div class="w-1 h-1 bg-current rounded-full"></div><div class="w-1 h-1 bg-current rounded-full"></div>
+            </div>`;
+        div.appendChild(handle);
+
+        // Delete Button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'absolute -left-6 top-3 opacity-0 group-hover:opacity-100 text-red-500/50 hover:text-red-500 transition-all text-xs';
+        delBtn.innerHTML = '✕';
+        delBtn.onclick = () => {
+            this.state.notionBlocks.splice(index, 1);
+            this.render();
+            this.saveToStorage();
+        };
+        div.appendChild(delBtn);
+
         let contentHtml = '';
         if (block.type === 'header') {
-            contentHtml = `<h2 contenteditable="true" class="text-2xl font-bold text-white outline-none">${block.content}</h2>`;
+            contentHtml = `<h2 contenteditable="true" class="text-2xl font-bold text-white outline-none" placeholder="Titre">${block.content}</h2>`;
         } else if (block.type === 'todo') {
             contentHtml = `
                 <div class="flex items-center gap-4">
-                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-5 accent-accent">
-                    <span contenteditable="true" class="text-gray-300 outline-none ${block.checked ? 'line-through opacity-50' : ''}">${block.content}</span>
+                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-5 accent-accent" onchange="window.app.toggleTodo(${index})">
+                    <span contenteditable="true" class="text-gray-300 outline-none flex-1 ${block.checked ? 'line-through opacity-50' : ''}" placeholder="Tâche...">${block.content}</span>
                 </div>`;
+        } else if (block.type === 'table') {
+            contentHtml = this.renderTableBlock(block, index);
         } else {
-            contentHtml = `<p contenteditable="true" class="text-gray-400 leading-relaxed outline-none">${block.content || 'Nouvelle note...'}</p>`;
+            contentHtml = `<p contenteditable="true" class="text-gray-400 leading-relaxed outline-none w-full" placeholder="Tapez '/' pour les commandes...">${block.content || ''}</p>`;
         }
 
-        div.innerHTML = contentHtml;
+        const contentDiv = document.createElement('div');
+        contentDiv.innerHTML = contentHtml;
+        div.appendChild(contentDiv);
         
-        // Save on edit
-        div.onblur = () => {
-            const editor = div.querySelector('[contenteditable="true"]');
-            if (editor) {
+        // Logic for Slash Command & Save
+        const editor = contentDiv.querySelector('[contenteditable="true"]');
+        if (editor) {
+            editor.oninput = (e) => {
+                if (e.data === '/') {
+                    this.showBlockMenu(e, index);
+                }
+            };
+            editor.onblur = () => {
                 this.state.notionBlocks[index].content = editor.innerText;
                 this.saveToStorage();
-            }
-        };
+            };
+        }
 
         return div;
+    }
+
+    renderTableBlock(block, index) {
+        return `
+            <table class="w-full border-collapse border border-white/10 rounded-xl overflow-hidden text-sm">
+                <tr class="bg-white/5">
+                    <th contenteditable="true" class="border border-white/10 p-3 text-left font-bold text-accent">Nom</th>
+                    <th contenteditable="true" class="border border-white/10 p-3 text-left font-bold text-accent">Valeur</th>
+                </tr>
+                <tr>
+                    <td contenteditable="true" class="border border-white/10 p-3 text-gray-400">${block.col1 || ''}</td>
+                    <td contenteditable="true" class="border border-white/10 p-3 text-gray-400">${block.col2 || ''}</td>
+                </tr>
+            </table>
+        `;
+    }
+
+    toggleTodo(index) {
+        this.state.notionBlocks[index].checked = !this.state.notionBlocks[index].checked;
+        this.render();
+        this.saveToStorage();
     }
 
     showBlockMenu(e) {
