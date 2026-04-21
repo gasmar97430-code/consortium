@@ -1,4 +1,4 @@
-class ConsortiumApp {
+﻿class ConsortiumApp {
     constructor() {
         this.version = "12.6";
         this.checkVersion();
@@ -201,7 +201,7 @@ class ConsortiumApp {
         div.appendChild(contentDiv);
         
         // Logic for Slash Command & Save
-        const CACHE_NAME = 'consortium-v11.7';const editor = contentDiv.querySelector('[contenteditable="true"]');
+        const editor = contentDiv.querySelector('[contenteditable="true"]');
         if (editor) {
             editor.oninput = (e) => {
                 if (e.data === '/') {
@@ -577,3 +577,4 @@ class ConsortiumApp {
 window.onload = () => {
     window.app = new ConsortiumApp();
 };
+

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'consortium-v11.5';
+﻿const CACHE_NAME = 'consortium-v11.7';
 const ASSETS = [
   './',
   './index.html',
@@ -44,3 +44,4 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
