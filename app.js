@@ -1,194 +1,74 @@
-/**
- * Consortium Workspace Engine
- * Handles blocks, persistence, and Omnibox search.
- */
-
 class ConsortiumApp {
     constructor() {
-        this.blocksContainer = document.getElementById('blocks-container');
-        this.omnibox = document.getElementById('omnibox');
-        this.addBlockBtn = document.getElementById('add-block-btn');
-        this.blockMenu = document.getElementById('block-menu');
-        this.pageTitle = document.getElementById('page-title');
-        this.sidebar = document.getElementById('sidebar');
-        this.menuToggle = document.getElementById('menu-toggle');
-        this.closeSidebar = document.getElementById('close-sidebar');
-        this.installBtn = document.getElementById('install-btn');
-        this.deferredPrompt = null;
-        
-        this.state = {
-            currentPage: 'home',
+        this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
+            activePage: 'home',
             pages: {
-                home: {
-                    title: 'Bienvenue dans le Consortium',
-                    blocks: [
-                        { type: 'header', content: 'Prise en main' },
-                        { type: 'text', content: 'Ceci est votre nouvel espace de travail partagé.' },
-                        { type: 'todo', content: 'Explorer les fonctionnalités', checked: false }
-                    ]
-                },
-                tasks: { title: 'Mes Tâches', blocks: [] },
-                projects: { title: 'Projets (Lab)', blocks: [], localProjects: [] },
-                chat: { title: 'Chat avec Antigravity', blocks: [], messages: [{role: 'bot', text: 'Bonjour ! Comment puis-je vous aider aujourd\'hui dans votre Consortium ?'}] },
-                archive: { title: 'Archive', blocks: [] }
+                home: { title: 'Dashboard', icon: '🏠' },
+                projects: { title: 'Projects', icon: '📂' },
+                tasks: { title: 'Tasks', icon: '✅' },
+                ai: { title: 'Antigravity Assistant', icon: '🤖' },
+                calendar: { title: 'Calendar', icon: '📅' },
+                settings: { title: 'Settings', icon: '⚙️' }
             }
         };
-
+        
         this.init();
     }
 
     init() {
-        console.log('Consortium Engine v2.1 - Loading...');
-        this.loadFromStorage();
-        this.render();
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        // Omnibox
-        this.omnibox.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const query = this.omnibox.value.trim();
-                if (query.startsWith('http') || query.includes('.')) {
-                    window.open(query.startsWith('http') ? query : `https://${query}`, '_blank');
-                } else if (query) {
-                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                }
-                this.omnibox.value = '';
-            }
-        });
-
-        // Add Block Menu
-        this.addBlockBtn.addEventListener('click', (e) => {
-            const rect = this.addBlockBtn.getBoundingClientRect();
-            this.blockMenu.style.left = `${rect.left}px`;
-            this.blockMenu.style.top = `${rect.top - this.blockMenu.offsetHeight - 10}px`;
-            this.blockMenu.classList.toggle('hidden');
-        });
-
-        // Menu Items
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const type = item.dataset.type;
-                this.addBlock(type);
-                this.blockMenu.classList.add('hidden');
-            });
-        });
-
-        // Sidebar Navigation
-        document.querySelectorAll('.sidebar-nav li').forEach(li => {
-            li.addEventListener('click', () => {
-                const pageId = li.dataset.page;
-                this.switchPage(pageId);
-                
-                document.querySelectorAll('.sidebar-nav li').forEach(l => l.classList.remove('active'));
-                li.classList.add('active');
-                this.sidebar.classList.remove('open');
-            });
-        });
-
-        // Mobile Toggles
-        this.menuToggle.addEventListener('click', () => this.sidebar.classList.add('open'));
-        this.closeSidebar.addEventListener('click', () => this.sidebar.classList.remove('open'));
-
-        // PWA Install logic
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            this.deferredPrompt = e;
-            this.installBtn.classList.remove('hidden');
-        });
-
-        this.installBtn.addEventListener('click', async () => {
-            if (this.deferredPrompt) {
-                this.deferredPrompt.prompt();
-                const { outcome } = await this.deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    this.installBtn.classList.add('hidden');
-                }
-                this.deferredPrompt = null;
-            }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            this.installBtn.classList.add('hidden');
-            console.log('PWA installed');
-        });
-
-        // Bottom Nav (Mobile)
-        document.querySelectorAll('#bottom-nav button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const pageId = btn.dataset.page;
-                this.switchPage(pageId);
-                
-                // Update icons colors
-                document.querySelectorAll('#bottom-nav button').forEach(b => {
-                    b.classList.remove('text-accent');
-                    b.classList.add('text-gray-500');
-                });
-                btn.classList.add('text-accent');
-                btn.classList.remove('text-gray-500');
-            });
-        });
-
-        // Auto-save on any change
-        this.blocksContainer.addEventListener('input', () => this.saveToStorage());
-        this.pageTitle.addEventListener('input', () => {
-            this.state.pages[this.state.currentPage].title = this.pageTitle.innerText;
-            this.saveToStorage();
-        });
-
-        // Close menu on click outside
-        window.addEventListener('click', (e) => {
-            if (!this.addBlockBtn.contains(e.target) && !this.blockMenu.contains(e.target)) {
-                this.blockMenu.classList.add('hidden');
-            }
-        });
-    }
-
-    switchPage(pageId) {
-        this.state.currentPage = pageId;
-        this.render();
-    }
-
-    addBlock(type, content = '') {
-        const page = this.state.pages[this.state.currentPage];
-        let newBlock = { type, content: content || this.getDefaultContent(type) };
-        if (type === 'todo') newBlock.checked = false;
+        this.sidebar = document.getElementById('sidebar');
+        this.pageTitle = document.getElementById('page-title');
+        this.blocksContainer = document.getElementById('blocks-container');
+        this.pageList = document.querySelectorAll('#page-list li');
+        this.bottomNav = document.querySelectorAll('#bottom-nav button');
         
-        page.blocks.push(newBlock);
+        this.setupNavigation();
         this.render();
-        this.saveToStorage();
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeSidebar = document.getElementById('close-sidebar');
+        if (menuToggle) menuToggle.onclick = () => this.sidebar.classList.remove('-translate-x-full');
+        if (closeSidebar) closeSidebar.onclick = () => this.sidebar.classList.add('-translate-x-full');
     }
 
-    getDefaultContent(type) {
-        switch(type) {
-            case 'header': return 'Nouveau Titre';
-            case 'todo': return 'Nouvelle tâche';
-            case 'table': return [['Col 1', 'Col 2'], ['', '']];
-            default: return 'Commencez à écrire...';
-        }
+    setupNavigation() {
+        const handleNav = (el) => {
+            const pageId = el.getAttribute('data-page');
+            this.state.activePage = pageId;
+            this.sidebar.classList.add('-translate-x-full'); // Close mobile menu
+            this.render();
+            this.saveToStorage();
+        };
+
+        this.pageList.forEach(li => li.onclick = () => handleNav(li));
+        this.bottomNav.forEach(btn => btn.onclick = () => handleNav(btn));
     }
 
     render() {
-        const page = this.state.pages[this.state.currentPage];
-        this.pageTitle.innerText = page.title;
-        this.blocksContainer.innerHTML = '';
+        const pageId = this.state.activePage;
+        
+        // Update active states
+        [...this.pageList, ...this.bottomNav].forEach(el => {
+            const active = el.getAttribute('data-page') === pageId;
+            el.classList.toggle('active', active);
+            el.classList.toggle('text-accent', active);
+        });
 
-        if (this.state.currentPage === 'home') {
-            this.renderDashboard();
-        } else if (this.state.currentPage === 'projects') {
-            this.renderProjects();
-        } else if (this.state.currentPage === 'chat') {
-            this.renderChat();
-        } else {
-            page.blocks.forEach((block, index) => {
-                const blockEl = this.createBlockElement(block, index);
-                this.blocksContainer.appendChild(blockEl);
-            });
+        // Specialized rendering
+        switch(pageId) {
+            case 'home': this.renderHome(); break;
+            case 'projects': this.renderProjects(); break;
+            case 'tasks': this.renderTasks(); break;
+            case 'ai': this.renderAI(); break;
+            default: this.renderAI();
         }
     }
 
-    renderDashboard() {
+    renderHome() {
+        this.pageTitle.innerText = "Bienvenue dans le Consortium";
+        this.blocksContainer.innerHTML = '';
+        
         // To-do List Card
         const todoCard = this.createCard('To-do List', '📝');
         const todoList = document.createElement('div');
@@ -227,9 +107,9 @@ class ConsortiumApp {
         const progressList = document.createElement('div');
         progressList.className = 'space-y-8';
         const projects = [
-            { name: 'Architecture Système', progress: 80 },
-            { name: 'Interface Utilisateur', progress: 20 },
-            { name: 'Développement API', progress: 75 }
+            { name: "Neural_DAW", progress: 85, tag: "NÉON" },
+            { name: "deep_verdict", progress: 40, tag: "CRITIQUE" },
+            { name: "vocal_studio", progress: 60, tag: "AUDIO" }
         ];
         projects.forEach(p => {
             const item = document.createElement('div');
@@ -246,8 +126,9 @@ class ConsortiumApp {
         });
         
         const actionBtn = document.createElement('button');
-        actionBtn.className = 'mt-10 w-fit px-6 py-3 bg-accent/20 border border-accent/20 text-accent rounded-2xl text-xs font-bold flex items-center gap-3 hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/10';
-        actionBtn.innerHTML = `<span class="text-lg">+</span> Commander`;
+        actionBtn.className = 'mt-10 w-fit px-6 py-3 bg-accent/20 border border-accent/30 text-accent rounded-2xl text-xs font-bold flex items-center gap-3 hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/10';
+        actionBtn.innerHTML = `<span class="text-lg">🚀</span> LANCER LE LAB`;
+        actionBtn.onclick = () => { this.state.activePage = 'projects'; this.render(); };
         
         progressCard.querySelector('.card-content').appendChild(progressList);
         progressCard.querySelector('.card-content').appendChild(actionBtn);
@@ -255,137 +136,110 @@ class ConsortiumApp {
     }
 
     renderProjects() {
-        const projectsCard = this.createCard('All Projects', '📁');
-        const list = document.createElement('div');
-        list.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+        this.pageTitle.innerText = "Le Lab (d:\\lab\\Projets)";
+        this.blocksContainer.innerHTML = '';
         
-        const projects = [
-            { name: 'DOC_JUCE', progress: 65, status: 'Active' },
-            { name: 'FICHIER APP', progress: 40, status: 'Pending' },
-            { name: 'Studio Mobile', progress: 95, status: 'Review' },
-            { name: 'Consortium', progress: 80, status: 'Live' }
+        const realProjects = [
+            "Neural_DAW", "audio-coach", "deep_verdict", "lutherie_app", 
+            "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy"
         ];
-
-        projects.forEach(p => {
-            const item = document.createElement('div');
-            item.className = 'p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/30 transition-all';
-            item.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <span class="font-bold text-sm">${p.name}</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-accent/10 text-accent uppercase font-bold">${p.status}</span>
-                </div>
-                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-accent shadow-[0_0_10px_rgba(125,95,255,0.5)]" style="width: ${p.progress}%"></div>
+        
+        realProjects.forEach(name => {
+            const card = this.createCard(name, '📂');
+            const content = card.querySelector('.card-content');
+            content.innerHTML = `
+                <div class="flex flex-col gap-4">
+                    <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Local : d:\\lab\\Projets\\${name}</div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-3 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER</button>
+                        <button class="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-xl hover:text-white transition-all">📂</button>
+                    </div>
                 </div>
             `;
-            list.appendChild(item);
+            this.blocksContainer.appendChild(card);
         });
-        projectsCard.querySelector('.card-content').appendChild(list);
-        this.blocksContainer.appendChild(projectsCard);
     }
 
-    renderChat() {
-        const page = this.state.pages.chat;
-        const chatCard = this.createCard('AI Assistant', '🤖');
-        chatCard.className += ' lg:col-span-2'; // Chat takes full width
-        
-        const container = document.createElement('div');
-        container.className = 'flex flex-col gap-6 h-[400px] overflow-y-auto no-scrollbar mb-6 p-2';
-        
-        page.messages.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = `max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'self-end bg-accent text-white shadow-lg shadow-accent/20' : 'self-start bg-white/5 border border-white/10 text-gray-300'}`;
-            div.innerText = msg.text;
-            container.appendChild(div);
-        });
+    renderTasks() {
+        this.pageTitle.innerText = "Tasks Management";
+        this.blocksContainer.innerHTML = '';
+        const card = this.createCard('Journal de bord', '📋');
+        card.querySelector('.card-content').innerHTML = `<p class="text-gray-500 italic">Vos tâches sont synchronisées avec Antigravity.</p>`;
+        this.blocksContainer.appendChild(card);
+    }
 
-        const inputWrapper = document.createElement('div');
-        inputWrapper.className = 'relative flex items-center';
-        const input = document.createElement('input');
-        input.className = 'w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-accent/50 transition-all pr-12';
-        input.placeholder = 'Type a message...';
+    renderAI() {
+        this.pageTitle.innerText = "Antigravity Assistant";
+        this.blocksContainer.innerHTML = '';
         
-        const sendBtn = document.createElement('button');
-        sendBtn.className = 'absolute right-4 text-accent hover:scale-110 transition-transform';
-        sendBtn.innerHTML = '➤';
-
-        const sendMessage = () => {
-            if (!input.value.trim()) return;
-            const text = input.value;
-            page.messages.push({role: 'user', text});
-            input.value = '';
-            this.render();
+        const chatCard = this.createCard('Dialogue Antigravity', '🤖');
+        chatCard.classList.add('lg:col-span-2');
+        
+        const chatContainer = document.createElement('div');
+        chatContainer.className = 'flex flex-col h-[450px]';
+        
+        chatContainer.innerHTML = `
+            <div class="flex items-center justify-between p-4 bg-accent/5 border border-accent/10 rounded-2xl mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
+                    <span class="text-xs font-bold tracking-widest text-accent uppercase">Antigravity Connecté</span>
+                </div>
+                <span class="text-[10px] text-gray-500">PC : En attente de commandes...</span>
+            </div>
             
-            setTimeout(() => {
-                page.messages.push({role: 'bot', text: "Analyzing your request... Everything is synced in the Consortium."});
-                this.render();
-                this.saveToStorage();
-            }, 800);
-            this.saveToStorage();
-        };
-
-        input.addEventListener('keydown', (e) => e.key === 'Enter' && sendMessage());
-        sendBtn.addEventListener('click', sendMessage);
-
-        chatCard.querySelector('.card-content').appendChild(container);
-        chatCard.querySelector('.card-content').appendChild(inputWrapper);
-        inputWrapper.appendChild(input);
-        inputWrapper.appendChild(sendBtn);
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6 no-scrollbar">
+                <div class="flex flex-col gap-2 max-w-[85%]">
+                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300 leading-relaxed shadow-sm">
+                        Bonjour ! Je suis Antigravity. Je suis prêt à gérer votre Lab. Dites-moi quel projet lancer ou quel dossier explorer.
+                    </div>
+                    <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer Neural_DAW</button>
+                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer vocal_studio</button>
+                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">📂 Ouvrir d:\\lab</button>
+                </div>
+                
+                <div class="relative group">
+                    <input type="text" id="ai-input" placeholder="Écrivez votre commande ici..." class="w-full bg-[#1a1f26] border border-white/5 rounded-2xl px-6 py-4 pr-16 text-sm text-gray-200 outline-none focus:border-accent/50 focus:bg-[#1f262e] transition-all">
+                    <button id="ai-send" class="absolute right-3 top-3 w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 hover:scale-105 active:scale-95 transition-all">
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        `;
         
+        chatCard.querySelector('.card-content').appendChild(chatContainer);
         this.blocksContainer.appendChild(chatCard);
     }
 
     createCard(title, icon) {
         const div = document.createElement('div');
-        div.className = 'card-glass p-8 flex flex-col gap-6 group relative overflow-hidden';
+        div.className = 'card-glass p-6 md:p-8 flex flex-col gap-6 group relative overflow-hidden transition-all hover:border-white/10';
         div.innerHTML = `
             <div class="flex items-center justify-between relative z-10">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl shadow-inner border border-white/5">${icon}</div>
-                    <h3 class="font-bold text-xl tracking-tight text-white/90">${title}</h3>
+                    <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl shadow-inner border border-white/5 group-hover:bg-accent/10 transition-colors">${icon}</div>
+                    <h3 class="font-bold text-lg md:text-xl tracking-tight text-white/90">${title}</h3>
                 </div>
                 <button class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-all">•••</button>
             </div>
-            <div class="card-content relative z-10"></div>
-            <!-- Background Decoration -->
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="card-content relative z-10 flex-1"></div>
+            <!-- Glow Effect -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
         `;
         return div;
-    }
-
-    createBlockElement(block, index) {
-        const card = this.createCard(block.type.toUpperCase(), '📄');
-        const content = card.querySelector('.card-content');
-        
-        const editor = document.createElement('div');
-        editor.contentEditable = true;
-        editor.className = 'outline-none text-gray-300 min-h-[100px]';
-        editor.innerText = block.content;
-        editor.addEventListener('input', () => {
-            block.content = editor.innerText;
-            this.saveToStorage();
-        });
-        
-        content.appendChild(editor);
-        return card;
     }
 
     saveToStorage() {
         localStorage.setItem('consortium_data', JSON.stringify(this.state));
     }
-
-    loadFromStorage() {
-        const data = localStorage.getItem('consortium_data');
-        if (data) {
-            const savedState = JSON.parse(data);
-            // Merge saved pages with default pages to ensure new features appear
-            this.state.pages = { ...this.state.pages, ...savedState.pages };
-            this.state.currentPage = savedState.currentPage || 'home';
-        }
-    }
 }
 
-// Initialize App
-document.addEventListener('DOMContentLoaded', () => {
+// Lancement de l'application
+window.onload = () => {
     window.app = new ConsortiumApp();
-});
+};
