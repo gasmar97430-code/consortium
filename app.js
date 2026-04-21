@@ -353,22 +353,15 @@ class ConsortiumApp {
         let currentFolders = [];
         const pathUpper = this.state.currentPath.toUpperCase().trim();
         
-        // Deep Navigation Logic (Mock)
-        if (pathUpper === 'D:\\LAB' || pathUpper === 'D:') {
-            currentFolders = ["Projets", "Archives", "Scripts", "Backups"];
-        } else if (pathUpper.includes('PROJETS')) {
-            if (pathUpper.endsWith('PROJETS')) {
-                currentFolders = ["Neural_DAW", "Lutherie_App", "Vocal_Studio", "DJ_Hybride", "Bleachbit-Dashboard", "Cam_Spy"];
-            } else {
-                currentFolders = ["src", "dist", "assets", "README.md", "config.json"];
-            }
-        } else if (pathUpper === 'C:\\' || pathUpper === 'C:') {
-            currentFolders = ["Windows", "Program Files", "Users", "Temp"];
-        } else if (pathUpper.includes('USERS')) {
-            currentFolders = ["gasmar", "Public", "Default"];
-        } else {
-            currentFolders = ["Documents", "Images", "Bureau"];
-        }
+        // Deep Navigation Logic (Seeded with Real Data from Audit)
+        const realData = {
+            'D:\\LAB': ['.venv', 'BACKUP', 'DOC_JUCE', 'DOSSIERS ZIP', 'FICHIER POUR APP', 'IMAG_ICON', 'My ideas', 'Projets', 'taches_journaliere'],
+            'D:\\LAB\\PROJETS': ['audio-coach', 'bibliotheque_esoterique', 'bleachbit-dashboard', 'cam_spy', 'deep_verdict', 'devblog', 'dj_hybride', "KER'SELECT'DJ", 'lutherie_app', 'manager', 'multyconverter_style', 'Neural_DAW', 'PROGAMME JUCE', "son'ali_guitar", 'vocal_studio'],
+            'C:\\': ['Windows', 'Program Files', 'Users', 'Temp']
+        };
+
+        const currentPathKey = this.state.currentPath.toUpperCase();
+        currentFolders = realData[currentPathKey] || ["src", "dist", "assets", "README.md", "package.json"];
 
         const table = document.createElement('table');
         table.className = "w-full text-left text-[11px]";
@@ -383,14 +376,14 @@ class ConsortiumApp {
             <tbody class="divide-y divide-white/5">
                 ${currentFolders.map(name => `
                     <tr class="hover:bg-accent/5 transition-all group">
-                        <td class="p-4 flex items-center gap-3 cursor-pointer" onclick="window.app.renderProjects('${this.state.currentPath + (this.state.currentPath.endsWith('\\') ? '' : '\\') + name}')">
-                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl group-hover:bg-accent/20 transition-all shadow-inner">📁</div>
+                        <td class="p-4 flex items-center gap-3 cursor-pointer" onclick="window.app.renderProjects('${(this.state.currentPath + (this.state.currentPath.endsWith('\\') ? '' : '\\') + name).replace(/\\/g, '\\\\')}')">
+                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-xl group-hover:bg-accent/20 transition-all shadow-inner">${name.includes('.') ? '📄' : '📁'}</div>
                             <span class="text-gray-300 font-bold group-hover:text-accent transition-colors tracking-tight">${name}</span>
                         </td>
-                        <td class="p-4 text-gray-500 font-medium hidden md:table-cell uppercase text-[9px] tracking-widest">${name.toLowerCase().includes('app') ? 'System App' : 'Project Folder'}</td>
+                        <td class="p-4 text-gray-500 font-medium hidden md:table-cell uppercase text-[9px] tracking-widest">${name.includes('.') ? 'Fichier' : 'Dossier'}</td>
                         <td class="p-4 text-right">
                             <button class="px-6 py-2.5 bg-accent/20 border border-accent/30 text-accent rounded-xl text-[10px] font-black uppercase hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/5 hover:shadow-accent/20 active:scale-95">
-                                🚀 LANCER
+                                ${name.includes('.') ? '👀 VOIR' : '🚀 OUVRIR'}
                             </button>
                         </td>
                     </tr>
