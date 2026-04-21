@@ -196,25 +196,38 @@ class ConsortiumApp {
         `;
         this.blocksContainer.appendChild(explorerHeader);
 
-        const currentFolders = path === 'C:\\' ? ["Windows", "Program Files", "Users"] : [
-            "Neural_DAW", "audio-coach", "deep_verdict", "lutherie_app", 
-            "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy",
-            "BACKUP", "MES IDS", "DOC_JUCE", "Projets"
-        ];
+        let currentFolders = [];
+        
+        if (path === 'D:\\lab') {
+            // Vue Racine : Uniquement le dossier Projets
+            currentFolders = ["Projets"];
+        } else if (path.includes('D:\\lab\\Projets')) {
+            // Vue Projets : Uniquement les dossiers "Projets" réels ou "Apps"
+            currentFolders = [
+                "Neural_DAW", "lutherie_app", "vocal_studio", 
+                "dj_hybride", "bleachbit-dashboard", "cam_spy"
+            ];
+            // On pourrait ajouter dynamiquement tout ce qui contient "app"
+        } else if (path === 'C:\\') {
+            currentFolders = ["Windows", "Program Files", "Users"];
+        } else {
+            // Autres chemins (D:, E:, etc.)
+            currentFolders = ["Projets", "Archives", "Apps"];
+        }
         
         currentFolders.forEach(name => {
             const card = this.createCard(name, '📁');
-            card.onclick = () => this.renderProjects(path + '\\' + name);
+            card.onclick = () => this.renderProjects(path + (path.endsWith('\\') ? '' : '\\') + name);
             const content = card.querySelector('.card-content');
             content.innerHTML = `
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center gap-2">
-                        <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-gray-500 font-mono">FOLDER</span>
-                        <span class="text-[10px] text-gray-600 italic">Modifié : Aujourd'hui</span>
+                        <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-gray-500 font-mono">
+                            ${name.toLowerCase().includes('app') ? 'APPLICATION' : 'PROJET'}
+                        </span>
                     </div>
                     <div class="flex gap-2">
-                        <button class="flex-1 py-3 bg-accent/20 border border-accent/30 text-accent rounded-xl text-xs font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER PROJET</button>
-                        <button class="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-xl hover:text-white transition-all" title="Ouvrir le dossier">📂</button>
+                        <button class="flex-1 py-3 bg-accent/20 border border-accent/30 text-accent rounded-xl text-[10px] font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER</button>
                     </div>
                 </div>
             `;
