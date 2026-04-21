@@ -110,6 +110,24 @@ class ConsortiumApp {
         todoCard.querySelector('.card-content').appendChild(footerInput);
         this.blocksContainer.appendChild(todoCard);
 
+        // Antigravity Launch Card
+        const aiLaunchCard = this.createCard('Antigravity Command', '🤖');
+        aiLaunchCard.querySelector('.card-content').innerHTML = `
+            <div class="flex flex-col gap-6 py-2">
+                <div class="flex items-center gap-4 p-4 bg-accent/5 border border-accent/10 rounded-2xl">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
+                    <span class="text-xs font-bold tracking-widest text-accent uppercase">Prêt pour vos ordres</span>
+                </div>
+                <p class="text-xs text-gray-500 leading-relaxed italic">"Je suis votre binôme. Je peux lancer vos projets et explorer vos dossiers d:\\lab à distance."</p>
+                <button id="main-ai-launch" class="w-full py-4 bg-accent text-white rounded-2xl font-bold text-sm shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all">
+                    🤖 LANCER L'ASSISTANT
+                </button>
+            </div>
+        `;
+        this.blocksContainer.appendChild(aiLaunchCard);
+        const mainAiBtn = aiLaunchCard.querySelector('#main-ai-launch');
+        if (mainAiBtn) mainAiBtn.onclick = () => { this.state.activePage = 'ai'; this.render(); this.saveToStorage(); };
+
         // Project Progress Card
         const progressCard = this.createCard('Project Progress', '📊');
         const progressList = document.createElement('div');
