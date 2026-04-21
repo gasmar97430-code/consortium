@@ -22,6 +22,14 @@ class ConsortiumApp {
         this.pageList = document.querySelectorAll('#page-list li');
         this.bottomNav = document.querySelectorAll('#bottom-nav button');
         
+        // AI Quick Toggle
+        const aiToggle = document.getElementById('ai-quick-toggle');
+        if (aiToggle) aiToggle.onclick = () => { 
+            this.state.activePage = 'ai'; 
+            this.render(); 
+            this.saveToStorage();
+        };
+
         this.setupNavigation();
         this.render();
         
@@ -136,23 +144,43 @@ class ConsortiumApp {
     }
 
     renderProjects() {
-        this.pageTitle.innerText = "Le Lab (d:\\lab\\Projets)";
+        this.pageTitle.innerText = "Explorateur de Fichiers";
         this.blocksContainer.innerHTML = '';
         
+        // Windows Explorer Style Header
+        const explorerHeader = document.createElement('div');
+        explorerHeader.className = 'lg:col-span-2 bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4 mb-2';
+        explorerHeader.innerHTML = `
+            <div class="flex gap-2">
+                <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">←</button>
+                <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">↑</button>
+            </div>
+            <div class="flex-1 bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 font-mono flex items-center gap-2">
+                <span>📁</span> d:\\lab\\Projets
+            </div>
+            <div class="max-w-[150px] w-full bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
+                🔍 Rechercher...
+            </div>
+        `;
+        this.blocksContainer.appendChild(explorerHeader);
+
         const realProjects = [
             "Neural_DAW", "audio-coach", "deep_verdict", "lutherie_app", 
             "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy"
         ];
         
         realProjects.forEach(name => {
-            const card = this.createCard(name, '📂');
+            const card = this.createCard(name, '📁');
             const content = card.querySelector('.card-content');
             content.innerHTML = `
                 <div class="flex flex-col gap-4">
-                    <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Local : d:\\lab\\Projets\\${name}</div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-gray-500 font-mono">FOLDER</span>
+                        <span class="text-[10px] text-gray-600 italic">Modifié : Aujourd'hui</span>
+                    </div>
                     <div class="flex gap-2">
-                        <button class="flex-1 py-3 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER</button>
-                        <button class="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-xl hover:text-white transition-all">📂</button>
+                        <button class="flex-1 py-3 bg-accent/20 border border-accent/30 text-accent rounded-xl text-xs font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER PROJET</button>
+                        <button class="px-4 py-3 bg-white/5 border border-white/10 text-gray-400 rounded-xl hover:text-white transition-all" title="Ouvrir le dossier">📂</button>
                     </div>
                 </div>
             `;
