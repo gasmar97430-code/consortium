@@ -144,32 +144,40 @@ class ConsortiumApp {
     }
 
     renderProjects() {
-        this.pageTitle.innerText = "Explorateur de Fichiers";
+        this.pageTitle.innerText = "Explorateur Universel";
         this.blocksContainer.innerHTML = '';
         
-        // Windows Explorer Style Header
+        // Windows Explorer Style Header with Drives
         const explorerHeader = document.createElement('div');
-        explorerHeader.className = 'lg:col-span-2 bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4 mb-2';
+        explorerHeader.className = 'lg:col-span-2 flex flex-col gap-4 mb-4';
         explorerHeader.innerHTML = `
-            <div class="flex gap-2">
-                <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">←</button>
-                <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">↑</button>
+            <div class="flex gap-2 mb-2">
+                <button class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold shadow-lg">Disque Local (C:)</button>
+                <button class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Données (D:)</button>
+                <button class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Lab (D:\\lab)</button>
             </div>
-            <div class="flex-1 bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 font-mono flex items-center gap-2">
-                <span>📁</span> d:\\lab\\Projets
-            </div>
-            <div class="max-w-[150px] w-full bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
-                🔍 Rechercher...
+            <div class="bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4">
+                <div class="flex gap-2">
+                    <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">←</button>
+                    <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">↑</button>
+                </div>
+                <div class="flex-1 bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-300 font-mono flex items-center gap-2">
+                    <span class="text-accent">📁</span> <input type="text" value="D:\\lab\\Projets" class="bg-transparent border-none outline-none w-full text-gray-200">
+                </div>
+                <div class="max-w-[150px] w-full bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
+                    🔍 Rechercher...
+                </div>
             </div>
         `;
         this.blocksContainer.appendChild(explorerHeader);
 
-        const realProjects = [
+        const currentFolders = [
             "Neural_DAW", "audio-coach", "deep_verdict", "lutherie_app", 
-            "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy"
+            "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy",
+            "BACKUP", "MES IDS", "DOC_JUCE", "Projets"
         ];
         
-        realProjects.forEach(name => {
+        currentFolders.forEach(name => {
             const card = this.createCard(name, '📁');
             const content = card.querySelector('.card-content');
             content.innerHTML = `
