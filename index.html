@@ -80,6 +80,17 @@
             border-color: rgba(125, 95, 255, 0.3);
         }
     </style>
+    <style>
+        @keyframes neon-glow {
+            0% { box-shadow: 0 0 5px rgba(125, 95, 255, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(125, 95, 255, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(125, 95, 255, 0.2); }
+        }
+        .neon-bar { animation: neon-glow 2s infinite ease-in-out; }
+        .glass-blur { backdrop-filter: blur(20px) saturate(180%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
 <body class="bg-dark text-gray-200 overflow-hidden h-screen flex">
 
@@ -271,6 +282,7 @@
     <script src="app.js?v=12.6"></script>
 </body>
 </html>
+
 
 
 
