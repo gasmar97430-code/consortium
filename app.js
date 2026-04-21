@@ -7,6 +7,11 @@ class ConsortiumApp {
             activePage: 'home',
             currentPath: 'D:\\lab\\Projets',
             chatHistory: [],
+            notionBlocks: [
+                { type: 'header', content: 'Ma Journée Masterwork' },
+                { type: 'todo', content: 'Finaliser l\'interface de commande', checked: true },
+                { type: 'text', content: 'Note : Le protocole PC-Link est maintenant actif.' }
+            ],
             pages: {
                 home: { title: 'Dashboard', icon: '🏠' },
                 projects: { title: 'EXPLORER', icon: '📂' },
@@ -106,46 +111,73 @@ class ConsortiumApp {
     }
 
     renderHome() {
-        this.pageTitle.innerText = "Bienvenue dans le Consortium";
+        this.pageTitle.innerText = "Tâches Journalières";
         
-        // To-do List Card
-        const todoCard = this.createCard('To-do List', '📝');
-        const todoList = document.createElement('div');
-        todoList.className = 'space-y-4';
-        const tasks = [
-            { text: 'Finaliser la structure de données', checked: true, tag: '🚩' },
-            { text: 'Optimisation du moteur de rendu', checked: false, tag: 'En cours', tagColor: 'text-pink-500' },
-            { text: 'Audit de sécurité des modules', checked: false, tag: '🕒 12 Avr', tagColor: 'text-gray-500' },
-            { text: 'Déploiement de la version Pro', checked: false, tag: '🕒 23 Avr', tagColor: 'text-gray-500' },
-            { text: 'Mise à jour de la documentation', checked: false, tag: '🕒 30 min', tagColor: 'text-gray-500' },
-            { text: 'Validation des tests unitaires', checked: false, tag: '🚩' }
-        ];
-        tasks.forEach(t => {
-            const item = document.createElement('div');
-            item.className = 'flex items-center justify-between p-1 rounded-xl transition-all';
-            item.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <input type="checkbox" ${t.checked ? 'checked' : ''} class="w-6 h-6 rounded-lg bg-white/5 border-white/10 text-accent accent-accent focus:ring-0">
-                    <span class="text-sm font-medium ${t.checked ? 'line-through text-gray-600' : 'text-gray-300'}">${t.text}</span>
-                </div>
-                <span class="text-[11px] font-bold ${t.tagColor || 'text-red-500'}">${t.tag}</span>
-            `;
-            todoList.appendChild(item);
+        // Render Notion Blocks
+        this.state.notionBlocks.forEach((block, index) => {
+            const blockEl = this.createNotionBlock(block, index);
+            this.blocksContainer.appendChild(blockEl);
         });
-        
-        const footerInput = document.createElement('div');
-        footerInput.className = 'mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-gray-600';
-        footerInput.innerHTML = `<span class="text-xs italic">Ajouter une action rapide...</span> <span class="text-sm">→</span>`;
-        
-        todoCard.querySelector('.card-content').appendChild(todoList);
-        todoCard.querySelector('.card-content').appendChild(footerInput);
-        this.blocksContainer.appendChild(todoCard);
 
-        // Antigravity Direct Chat Card
+        // Add Block Button
+        const addBtn = document.createElement('button');
+        addBtn.className = 'w-12 h-12 rounded-full bg-accent text-white fixed bottom-24 right-8 shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-all z-[100]';
+        addBtn.innerHTML = '+';
+        addBtn.onclick = (e) => this.showBlockMenu(e);
+        document.body.appendChild(addBtn);
+
+        // Sidebar for Dashboard info
         this.renderAI();
-
-        // Masterwork Gallery
         this.renderGallery();
+    }
+
+    createNotionBlock(block, index) {
+        const div = document.createElement('div');
+        div.className = 'group relative p-2 rounded-xl hover:bg-white/5 transition-all min-h-[2rem]';
+        
+        let contentHtml = '';
+        if (block.type === 'header') {
+            contentHtml = `<h2 contenteditable="true" class="text-2xl font-bold text-white outline-none">${block.content}</h2>`;
+        } else if (block.type === 'todo') {
+            contentHtml = `
+                <div class="flex items-center gap-4">
+                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-5 accent-accent">
+                    <span contenteditable="true" class="text-gray-300 outline-none ${block.checked ? 'line-through opacity-50' : ''}">${block.content}</span>
+                </div>`;
+        } else {
+            contentHtml = `<p contenteditable="true" class="text-gray-400 leading-relaxed outline-none">${block.content || 'Nouvelle note...'}</p>`;
+        }
+
+        div.innerHTML = contentHtml;
+        
+        // Save on edit
+        div.onblur = () => {
+            const editor = div.querySelector('[contenteditable="true"]');
+            if (editor) {
+                this.state.notionBlocks[index].content = editor.innerText;
+                this.saveToStorage();
+            }
+        };
+
+        return div;
+    }
+
+    showBlockMenu(e) {
+        const menu = document.getElementById('block-menu');
+        menu.classList.remove('hidden');
+        menu.style.top = `${e.clientY - 200}px`;
+        menu.style.left = `${e.clientX - 100}px`;
+
+        const items = menu.querySelectorAll('.menu-item');
+        items.forEach(item => {
+            item.onclick = () => {
+                const type = item.getAttribute('data-type');
+                this.state.notionBlocks.push({ type, content: '', checked: false });
+                menu.classList.add('hidden');
+                this.render();
+                this.saveToStorage();
+            };
+        });
     }
 
         // Project Progress Card
