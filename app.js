@@ -1,5 +1,8 @@
 class ConsortiumApp {
     constructor() {
+        this.version = "7.6";
+        this.checkVersion();
+
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
             activePage: 'home',
             currentPath: 'D:\\lab\\Projets',
@@ -376,6 +379,17 @@ class ConsortiumApp {
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
         `;
         return div;
+    }
+
+    checkVersion() {
+        const lastVersion = localStorage.getItem('app_version');
+        if (lastVersion && lastVersion !== this.version) {
+            console.log("Nouvelle version détectée : " + this.version + ". Rafraîchissement...");
+            localStorage.setItem('app_version', this.version);
+            location.reload();
+        } else {
+            localStorage.setItem('app_version', this.version);
+        }
     }
 
     saveToStorage() {
