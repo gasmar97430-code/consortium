@@ -35,6 +35,25 @@ class ConsortiumApp {
         };
 
         this.setupNavigation();
+        
+        // Global Search Logic
+        const globalSearch = document.getElementById('global-search');
+        if (globalSearch) {
+            globalSearch.oninput = (e) => {
+                const term = e.target.value.toLowerCase();
+                if (term) {
+                    this.state.activePage = 'projects';
+                    this.render();
+                    const rows = document.querySelectorAll('tbody tr');
+                    rows.forEach(row => {
+                        const name = row.querySelector('td span')?.innerText.toLowerCase() || "";
+                        row.style.display = name.includes(term) ? '' : 'none';
+                    });
+                } else {
+                    this.render();
+                }
+            };
+        }
         this.render();
         
         // Mobile menu toggle
