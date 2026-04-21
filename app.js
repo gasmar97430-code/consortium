@@ -262,12 +262,6 @@ class ConsortiumApp {
             </div>
             
             <div class="space-y-4 relative z-[60] bg-[#0b0e14] pb-10">
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="window.app.handleCommand('Neural_DAW')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer Neural_DAW</button>
-                    <button onclick="window.app.handleCommand('vocal_studio')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer vocal_studio</button>
-                    <button onclick="window.app.handleCommand('lab')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">📂 Ouvrir d:\\lab</button>
-                </div>
-                
                 <div class="relative group">
                     <input type="text" id="ai-input" placeholder="Écrivez votre commande ici..." class="w-full bg-[#1a1f26] border border-white/10 rounded-2xl px-6 py-4 pr-16 text-sm text-gray-200 outline-none focus:border-accent transition-all">
                     <button id="ai-send" class="absolute right-2 top-2 w-12 h-12 bg-accent text-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 hover:scale-105 active:scale-95 transition-all">
