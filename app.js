@@ -521,7 +521,8 @@ class ConsortiumApp {
         if (input) {
             input.onkeydown = (e) => e.key === 'Enter' && sendMessage();
             // Auto-scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            const container = document.getElementById('chat-messages');
+            if (container) container.scrollTop = container.scrollHeight;
         }
     }
 
