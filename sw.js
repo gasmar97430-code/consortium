@@ -1,4 +1,4 @@
-const CACHE_NAME = 'consortium-v9.0';
+const CACHE_NAME = 'consortium-v11.5';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
 
 // Install Service Worker
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS);
@@ -27,11 +28,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Strategy: Cache First, falling back to Network
+// Fetch Strategy: Network First for app files, Cache First for others
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+  const isCoreFile = event.request.url.includes('app.js') || event.request.url.includes('index.html');
+  
+  if (isCoreFile) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
