@@ -13,6 +13,8 @@ class ConsortiumApp {
         this.sidebar = document.getElementById('sidebar');
         this.menuToggle = document.getElementById('menu-toggle');
         this.closeSidebar = document.getElementById('close-sidebar');
+        this.installBtn = document.getElementById('install-btn');
+        this.deferredPrompt = null;
         
         this.state = {
             currentPage: 'home',
@@ -87,6 +89,45 @@ class ConsortiumApp {
         // Mobile Toggles
         this.menuToggle.addEventListener('click', () => this.sidebar.classList.add('open'));
         this.closeSidebar.addEventListener('click', () => this.sidebar.classList.remove('open'));
+
+        // PWA Install logic
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            this.installBtn.classList.remove('hidden');
+        });
+
+        this.installBtn.addEventListener('click', async () => {
+            if (this.deferredPrompt) {
+                this.deferredPrompt.prompt();
+                const { outcome } = await this.deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    this.installBtn.classList.add('hidden');
+                }
+                this.deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            this.installBtn.classList.add('hidden');
+            console.log('PWA installed');
+        });
+
+        // Bottom Nav (Mobile)
+        document.querySelectorAll('#bottom-nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const pageId = btn.dataset.page;
+                this.switchPage(pageId);
+                
+                // Update icons colors
+                document.querySelectorAll('#bottom-nav button').forEach(b => {
+                    b.classList.remove('text-accent');
+                    b.classList.add('text-gray-500');
+                });
+                btn.classList.add('text-accent');
+                btn.classList.remove('text-gray-500');
+            });
+        });
 
         // Auto-save on any change
         this.blocksContainer.addEventListener('input', () => this.saveToStorage());

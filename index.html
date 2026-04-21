@@ -79,7 +79,10 @@
                 </ul>
             </nav>
             
-            <div class="mt-auto">
+            <div class="mt-auto space-y-3">
+                <button id="install-btn" class="hidden w-full p-3 bg-accent text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 hover:bg-accent-hover transition-all">
+                    📲 Installer l'App
+                </button>
                 <button class="w-full p-3 border border-dashed border-white/10 rounded-xl text-sm text-gray-500 hover:border-accent hover:text-accent transition-all">
                     + Nouvelle Page
                 </button>
@@ -110,10 +113,30 @@
                 <!-- Blocks injected by JS -->
             </div>
             
-            <div class="mt-8 opacity-0 hover:opacity-100 transition-opacity">
+            <div class="mt-8 opacity-0 hover:opacity-100 transition-opacity pb-24">
                 <button id="add-block-btn" class="text-gray-500 text-2xl hover:text-accent">+</button>
             </div>
         </section>
+
+        <!-- Bottom Navigation (Mobile Only) -->
+        <nav id="bottom-nav" class="md:hidden fixed bottom-0 inset-x-0 bg-dark/80 border-t border-white/10 glass-blur px-6 py-3 flex justify-between items-center z-50">
+            <button data-page="home" class="nav-btn flex flex-col items-center gap-1 text-accent">
+                <span class="text-xl">🏠</span>
+                <span class="text-[10px] uppercase font-bold tracking-tighter">Home</span>
+            </button>
+            <button data-page="tasks" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+                <span class="text-xl">✅</span>
+                <span class="text-[10px] uppercase font-bold tracking-tighter">Tasks</span>
+            </button>
+            <button data-page="projects" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+                <span class="text-xl">📂</span>
+                <span class="text-[10px] uppercase font-bold tracking-tighter">Lab</span>
+            </button>
+            <button data-page="chat" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+                <span class="text-xl">🤖</span>
+                <span class="text-[10px] uppercase font-bold tracking-tighter">AI</span>
+            </button>
+        </nav>
     </main>
 
     <!-- Block Menu -->

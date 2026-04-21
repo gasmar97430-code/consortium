@@ -2,20 +2,23 @@
   "name": "Consortium PWA",
   "short_name": "Consortium",
   "description": "Votre espace de travail personnel et interlocuteur Antigravity.",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0b0e14",
-  "theme_color": "#7d5fff",
+  "theme_color": "#0b0e14",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/1063/1063376.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://cdn-icons-png.flaticon.com/512/1063/1063376.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
