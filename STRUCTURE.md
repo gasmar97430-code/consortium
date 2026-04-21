@@ -31,3 +31,42 @@ Détection de version intelligente qui force la mise à jour du navigateur dès 
 
 ---
 *Document certifié par le Cerveau Antigravity - v9.0*
+
+## 📊 Schéma Fonctionnel (Miroir Technique)
+
+```mermaid
+graph TD
+    %% Interface Utilisateur
+    U((📱 Utilisateur)) -->|Tap| Nav[Barre de Navigation]
+    U -->|Texte| AI[Antigravity Agent]
+    
+    %% Logique Centrale (Cerveau)
+    subgraph APP_JS [Moteur app.js]
+        Nav -->|Changement Page| State{Gestionnaire d'État}
+        AI -->|Commande| Cmd[handleCommand]
+        Cmd -->|Protocole YES/RUN| Valid[Validation Séquence]
+        State -->|Rendu| UI[Mise à jour Visuelle]
+    end
+
+    %% Données & Stockage
+    subgraph DATA [Mémoire & Système]
+        State -->|Persistance| LS[(LocalStorage)]
+        Valid -->|Ordre| PC[(PC Local : D:\\lab)]
+        UI -->|Fetch| SW[Service Worker Cache]
+    end
+
+    %% Mapping des Fonctions
+    UI ---|Exploration| Exp[Zone Explorer]
+    UI ---|Visuel| Gal[Zone Galerie]
+    UI ---|Dialogue| Cha[Zone Chat]
+```
+
+## 🧩 Correspondance Interface / Code
+
+| Élément UI | Fonction Code | Rôle |
+| :--- | :--- | :--- |
+| **Bouton Projets** | `renderProjects()` | Scanne `D:\lab` et affiche la liste Windows-Style. |
+| **Barre Chat** | `sendMessage()` | Envoie votre texte au `handleCommand` pour analyse. |
+| **Cartes Galerie** | `renderGallery()` | Affiche vos visuels Masterwork avec effet de survol. |
+| **Fil d'Ariane** | `split('\\')` | Découpe le chemin actuel pour permettre le retour en arrière. |
+| **Badge Sync** | `animate-pulse` | Confirme visuellement que le protocole PC-Link est prêt. |
