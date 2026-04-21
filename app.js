@@ -177,6 +177,20 @@ class ConsortiumApp {
                 </div>`;
         } else if (block.type === 'table') {
             contentHtml = this.renderTableBlock(block, index);
+        } else if (block.type === 'divider') {
+            contentHtml = `<div class="h-[1px] bg-white/10 my-4 w-full"></div>`;
+        } else if (block.type === 'callout') {
+            contentHtml = `
+                <div class="p-4 bg-accent/5 border border-accent/20 rounded-2xl flex gap-4 items-start shadow-lg shadow-accent/5">
+                    <span class="text-xl">💡</span>
+                    <p contenteditable="true" class="text-sm text-gray-300 outline-none flex-1 italic" placeholder="Note importante...">${block.content || ''}</p>
+                </div>`;
+        } else if (block.type === 'gallery') {
+            contentHtml = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
+                    <div class="aspect-square bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center text-gray-600">🖼️</div>
+                    <div class="aspect-square bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center text-gray-600">🖼️</div>
+                </div>`;
         } else {
             contentHtml = `<p contenteditable="true" class="text-gray-400 leading-relaxed outline-none w-full" placeholder="Tapez '/' pour les commandes...">${block.content || ''}</p>`;
         }
@@ -228,17 +242,28 @@ class ConsortiumApp {
         this.saveToStorage();
     }
 
-    showBlockMenu(e) {
+    showBlockMenu(e, index = null) {
         const menu = document.getElementById('block-menu');
         menu.classList.remove('hidden');
-        menu.style.top = `${e.clientY - 200}px`;
-        menu.style.left = `${e.clientX - 100}px`;
+        menu.style.top = `${e.clientY > window.innerHeight - 250 ? e.clientY - 250 : e.clientY}px`;
+        menu.style.left = `${e.clientX > window.innerWidth - 200 ? e.clientX - 200 : e.clientX}px`;
 
         const items = menu.querySelectorAll('.menu-item');
         items.forEach(item => {
             item.onclick = () => {
                 const type = item.getAttribute('data-type');
-                this.state.notionBlocks.push({ type, content: '', checked: false });
+                const newBlock = { type, content: '', checked: false };
+                
+                if (index !== null) {
+                    this.state.notionBlocks.splice(index + 1, 0, newBlock);
+                    // Remove the '/' that triggered the menu
+                    if (this.state.notionBlocks[index].content.endsWith('/')) {
+                        this.state.notionBlocks[index].content = this.state.notionBlocks[index].content.slice(0, -1);
+                    }
+                } else {
+                    this.state.notionBlocks.push(newBlock);
+                }
+                
                 menu.classList.add('hidden');
                 this.render();
                 this.saveToStorage();
