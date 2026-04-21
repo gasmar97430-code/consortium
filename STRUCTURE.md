@@ -27,3 +27,14 @@ Ce document sert de référence technique pour l'organisation du projet.
 
 ---
 *Document généré par Antigravity - Binôme IA*
+
+## 📊 Schéma de la Structure
+
+```mermaid
+graph TD
+    U((Utilisateur Mobile)) -->|Interaction Tactile| P[Consortium PWA]
+    P -->|Mode Hors-Ligne| SW[Service Worker sw.js]
+    P -->|Dialogue & Ordres| AG[Antigravity Assistant]
+    AG -->|Scan & Lancement| PC[(PC Local : D:\\lab)]
+    PC -->|Exploration de Fichiers| P
+```
