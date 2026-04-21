@@ -419,10 +419,10 @@ class ConsortiumApp {
         galleryGrid.className = 'grid grid-cols-2 gap-4 mt-2';
         
         const images = [
-            { url: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400', title: 'Neural Space' },
-            { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400', title: 'Lab Core' },
-            { url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=400', title: 'Vocal Studio' },
-            { url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400', title: 'Design System' }
+            { url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800', title: 'Cyber Security Core' },
+            { url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800', title: 'Acoustic Engineering' },
+            { url: 'https://images.unsplash.com/photo-1451187534963-1d5623083433?auto=format&fit=crop&w=800', title: 'Neural Network' },
+            { url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800', title: 'Automated Lab' }
         ];
 
         images.forEach(img => {
