@@ -166,73 +166,91 @@ class ConsortiumApp {
         if (path) this.state.currentPath = path;
         this.saveToStorage();
         
-        this.pageTitle.innerText = "Explorateur Universel";
+        this.pageTitle.innerText = "Explorateur Windows";
         this.blocksContainer.innerHTML = '';
-        
-        // Windows Explorer Style Header with Drives
-        const explorerHeader = document.createElement('div');
-        explorerHeader.className = 'lg:col-span-2 flex flex-col gap-4 mb-4';
-        explorerHeader.innerHTML = `
-            <div class="flex flex-wrap gap-2 mb-2">
-                <button onclick="window.app.renderProjects('C:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">C:</button>
-                <button onclick="window.app.renderProjects('D:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">D:</button>
-                <button onclick="window.app.renderProjects('E:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">E:</button>
-                <button onclick="window.app.renderProjects('F:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">F:</button>
-                <button onclick="window.app.renderProjects('G:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">G:</button>
-                <button onclick="window.app.renderProjects('D:\\\\lab')" class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-[10px] font-bold shadow-lg">LAB (D:\\lab)</button>
+        this.blocksContainer.className = "lg:col-span-2 flex flex-col lg:flex-row gap-6 w-full min-h-[500px] bg-[#0b0e14] border border-white/5 rounded-3xl overflow-hidden mb-20";
+
+        // Windows Sidebar (Quick Access)
+        const sidebar = document.createElement('div');
+        sidebar.className = "w-full lg:w-64 bg-black/20 border-b lg:border-b-0 lg:border-r border-white/5 p-4 flex flex-row lg:flex-col gap-4 overflow-x-auto lg:overflow-x-hidden no-scrollbar";
+        sidebar.innerHTML = `
+            <div class="flex-shrink-0 flex flex-col gap-2 min-w-[120px]">
+                <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest pl-2 mb-1">Accès Rapide</p>
+                <div onclick="window.app.renderProjects('D:\\\\lab')" class="flex items-center gap-3 p-3 ${this.state.currentPath === 'D:\\lab' ? 'bg-accent/10 text-accent' : 'text-gray-400 hover:bg-white/5'} rounded-xl cursor-pointer transition-all text-xs">📂 Lab (D:)</div>
             </div>
-            <div class="bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4">
-                <div class="flex gap-2">
-                    <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">←</button>
-                    <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">↑</button>
-                </div>
-                <div class="flex-1 bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-300 font-mono flex items-center gap-2">
-                    <span class="text-accent">📁</span> <input type="text" value="${path || 'D:\\lab\\Projets'}" class="bg-transparent border-none outline-none w-full text-gray-200">
-                </div>
-                <div class="max-w-[150px] w-full bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
-                    🔍 Rechercher...
-                </div>
+            <div class="flex-shrink-0 flex flex-col gap-2 min-w-[120px]">
+                <p class="text-[9px] font-bold text-gray-600 uppercase tracking-widest pl-2 mb-1">Ce PC</p>
+                <div onclick="window.app.renderProjects('C:\\\\')" class="flex items-center gap-3 p-3 ${this.state.currentPath === 'C:\\' ? 'bg-accent/10 text-accent' : 'text-gray-400 hover:bg-white/5'} rounded-xl cursor-pointer transition-all text-xs">💽 System (C:)</div>
             </div>
         `;
-        this.blocksContainer.appendChild(explorerHeader);
 
-        let currentFolders = [];
+        // Main List View
+        const mainView = document.createElement('div');
+        mainView.className = "flex-1 flex flex-col overflow-hidden";
         
-        if (path === 'D:\\lab') {
-            // Vue Racine : Uniquement le dossier Projets
+        // Address Bar (Breadcrumbs)
+        const addressBar = document.createElement('div');
+        addressBar.className = "p-4 border-b border-white/5 bg-white/5 flex items-center gap-4";
+        addressBar.innerHTML = `
+            <div class="flex gap-2">
+                <button onclick="window.app.renderProjects('D:\\\\lab')" class="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center text-gray-400 hover:text-white transition-all">↑</button>
+            </div>
+            <div class="flex-1 bg-black/40 rounded-lg px-4 py-2 text-[10px] font-mono text-gray-400 flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap border border-white/5">
+                ${this.state.currentPath.split('\\').filter(x => x).map((p, i, arr) => `
+                    <span class="hover:text-accent cursor-pointer" onclick="window.app.renderProjects('${arr.slice(0, i+1).join('\\\\')}')">${p}</span>
+                `).join('<span class="text-gray-700 mx-1"> > </span>')}
+            </div>
+        `;
+
+        // File List (Table style)
+        const fileList = document.createElement('div');
+        fileList.className = "flex-1 overflow-y-auto no-scrollbar pb-10";
+        
+        let currentFolders = [];
+        const pathLower = this.state.currentPath.toLowerCase();
+        
+        if (pathLower === 'd:\\lab') {
             currentFolders = ["Projets"];
-        } else if (path.includes('D:\\lab\\Projets')) {
-            // Vue Projets : Uniquement les dossiers "Projets" réels ou "Apps"
-            currentFolders = [
-                "Neural_DAW", "lutherie_app", "vocal_studio", 
-                "dj_hybride", "bleachbit-dashboard", "cam_spy"
-            ];
-            // On pourrait ajouter dynamiquement tout ce qui contient "app"
-        } else if (path === 'C:\\') {
+        } else if (pathLower.includes('projets')) {
+            currentFolders = ["Neural_DAW", "lutherie_app", "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy"];
+        } else if (pathLower === 'c:\\') {
             currentFolders = ["Windows", "Program Files", "Users"];
         } else {
-            // Autres chemins (D:, E:, etc.)
-            currentFolders = ["Projets", "Archives", "Apps"];
+            currentFolders = ["Projets", "Apps", "Work"];
         }
+
+        const table = document.createElement('table');
+        table.className = "w-full text-left text-[11px]";
+        table.innerHTML = `
+            <thead class="sticky top-0 bg-[#0b0e14] text-gray-500 border-b border-white/5 z-10">
+                <tr>
+                    <th class="p-4 font-bold uppercase tracking-tighter">Nom</th>
+                    <th class="p-4 font-bold uppercase tracking-tighter hidden md:table-cell">Type</th>
+                    <th class="p-4 font-bold uppercase tracking-tighter text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                ${currentFolders.map(name => `
+                    <tr class="hover:bg-accent/5 transition-all group">
+                        <td class="p-4 flex items-center gap-3 cursor-pointer" onclick="window.app.renderProjects('${this.state.currentPath + (this.state.currentPath.endsWith('\\') ? '' : '\\') + name}')">
+                            <span class="text-lg">📁</span>
+                            <span class="text-gray-300 font-semibold group-hover:text-accent transition-colors">${name}</span>
+                        </td>
+                        <td class="p-4 text-gray-600 hidden md:table-cell">${name.toLowerCase().includes('app') ? 'System App' : 'Project Folder'}</td>
+                        <td class="p-4 text-right">
+                            <button class="px-3 py-1.5 bg-accent/20 border border-accent/30 text-accent rounded-lg text-[9px] font-black uppercase hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/5">LANCER</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+
+        fileList.appendChild(table);
+        mainView.appendChild(addressBar);
+        mainView.appendChild(fileList);
         
-        currentFolders.forEach(name => {
-            const card = this.createCard(name, '📁');
-            card.onclick = () => this.renderProjects(path + (path.endsWith('\\') ? '' : '\\') + name);
-            const content = card.querySelector('.card-content');
-            content.innerHTML = `
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-gray-500 font-mono">
-                            ${name.toLowerCase().includes('app') ? 'APPLICATION' : 'PROJET'}
-                        </span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex-1 py-3 bg-accent/20 border border-accent/30 text-accent rounded-xl text-[10px] font-bold hover:bg-accent hover:text-white transition-all">🚀 LANCER</button>
-                    </div>
-                </div>
-            `;
-            this.blocksContainer.appendChild(card);
-        });
+        this.blocksContainer.appendChild(sidebar);
+        this.blocksContainer.appendChild(mainView);
     }
 
     renderTasks() {
