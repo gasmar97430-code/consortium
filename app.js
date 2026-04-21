@@ -2,6 +2,7 @@ class ConsortiumApp {
     constructor() {
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
             activePage: 'home',
+            currentPath: 'D:\\lab\\Projets',
             pages: {
                 home: { title: 'Dashboard', icon: '🏠' },
                 projects: { title: 'Projects', icon: '📂' },
@@ -66,7 +67,7 @@ class ConsortiumApp {
         // Specialized rendering
         switch(pageId) {
             case 'home': this.renderHome(); break;
-            case 'projects': this.renderProjects(); break;
+            case 'projects': this.renderProjects(this.state.currentPath); break;
             case 'tasks': this.renderTasks(); break;
             case 'ai': this.renderAI(); break;
             default: this.renderAI();
@@ -161,7 +162,10 @@ class ConsortiumApp {
         this.blocksContainer.appendChild(progressCard);
     }
 
-    renderProjects() {
+    renderProjects(path) {
+        if (path) this.state.currentPath = path;
+        this.saveToStorage();
+        
         this.pageTitle.innerText = "Explorateur Universel";
         this.blocksContainer.innerHTML = '';
         
@@ -170,9 +174,9 @@ class ConsortiumApp {
         explorerHeader.className = 'lg:col-span-2 flex flex-col gap-4 mb-4';
         explorerHeader.innerHTML = `
             <div class="flex gap-2 mb-2">
-                <button class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold shadow-lg">Disque Local (C:)</button>
-                <button class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Données (D:)</button>
-                <button class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Lab (D:\\lab)</button>
+                <button onclick="window.app.renderProjects('C:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Disque Local (C:)</button>
+                <button onclick="window.app.renderProjects('D:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Données (D:)</button>
+                <button onclick="window.app.renderProjects('D:\\\\lab')" class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold shadow-lg">Lab (D:\\lab)</button>
             </div>
             <div class="bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4">
                 <div class="flex gap-2">
@@ -180,7 +184,7 @@ class ConsortiumApp {
                     <button class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400">↑</button>
                 </div>
                 <div class="flex-1 bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-300 font-mono flex items-center gap-2">
-                    <span class="text-accent">📁</span> <input type="text" value="D:\\lab\\Projets" class="bg-transparent border-none outline-none w-full text-gray-200">
+                    <span class="text-accent">📁</span> <input type="text" value="${path || 'D:\\lab\\Projets'}" class="bg-transparent border-none outline-none w-full text-gray-200">
                 </div>
                 <div class="max-w-[150px] w-full bg-black/20 border border-white/5 rounded-xl px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
                     🔍 Rechercher...
@@ -189,7 +193,7 @@ class ConsortiumApp {
         `;
         this.blocksContainer.appendChild(explorerHeader);
 
-        const currentFolders = [
+        const currentFolders = path === 'C:\\' ? ["Windows", "Program Files", "Users"] : [
             "Neural_DAW", "audio-coach", "deep_verdict", "lutherie_app", 
             "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy",
             "BACKUP", "MES IDS", "DOC_JUCE", "Projets"
@@ -197,6 +201,7 @@ class ConsortiumApp {
         
         currentFolders.forEach(name => {
             const card = this.createCard(name, '📁');
+            card.onclick = () => this.renderProjects(path + '\\' + name);
             const content = card.querySelector('.card-content');
             content.innerHTML = `
                 <div class="flex flex-col gap-4">
@@ -252,9 +257,9 @@ class ConsortiumApp {
             
             <div class="space-y-4">
                 <div class="flex flex-wrap gap-2">
-                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer Neural_DAW</button>
-                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer vocal_studio</button>
-                    <button class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">📂 Ouvrir d:\\lab</button>
+                    <button onclick="window.app.handleCommand('Neural_DAW')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer Neural_DAW</button>
+                    <button onclick="window.app.handleCommand('vocal_studio')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">🚀 Lancer vocal_studio</button>
+                    <button onclick="window.app.handleCommand('lab')" class="px-4 py-2 bg-white/5 border border-white/5 rounded-xl text-[10px] font-bold text-gray-400 hover:border-accent hover:text-white transition-all">📂 Ouvrir d:\\lab</button>
                 </div>
                 
                 <div class="relative group">
@@ -268,6 +273,17 @@ class ConsortiumApp {
         
         chatCard.querySelector('.card-content').appendChild(chatContainer);
         this.blocksContainer.appendChild(chatCard);
+    }
+
+    handleCommand(cmd) {
+        if (cmd === 'lab') {
+            this.state.activePage = 'projects';
+        } else if (cmd === 'Neural_DAW' || cmd === 'vocal_studio') {
+            this.state.activePage = 'projects';
+            // On pourrait filtrer ou surligner ici
+        }
+        this.render();
+        this.saveToStorage();
     }
 
     createCard(title, icon) {
