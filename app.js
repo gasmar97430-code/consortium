@@ -173,10 +173,13 @@ class ConsortiumApp {
         const explorerHeader = document.createElement('div');
         explorerHeader.className = 'lg:col-span-2 flex flex-col gap-4 mb-4';
         explorerHeader.innerHTML = `
-            <div class="flex gap-2 mb-2">
-                <button onclick="window.app.renderProjects('C:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Disque Local (C:)</button>
-                <button onclick="window.app.renderProjects('D:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-xs font-bold hover:border-accent hover:text-white transition-all">Données (D:)</button>
-                <button onclick="window.app.renderProjects('D:\\\\lab')" class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-xs font-bold shadow-lg">Lab (D:\\lab)</button>
+            <div class="flex flex-wrap gap-2 mb-2">
+                <button onclick="window.app.renderProjects('C:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">C:</button>
+                <button onclick="window.app.renderProjects('D:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">D:</button>
+                <button onclick="window.app.renderProjects('E:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">E:</button>
+                <button onclick="window.app.renderProjects('F:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">F:</button>
+                <button onclick="window.app.renderProjects('G:\\\\')" class="px-4 py-2 bg-white/5 border border-white/5 text-gray-400 rounded-xl text-[10px] font-bold hover:border-accent hover:text-white transition-all">G:</button>
+                <button onclick="window.app.renderProjects('D:\\\\lab')" class="px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-xl text-[10px] font-bold shadow-lg">LAB (D:\\lab)</button>
             </div>
             <div class="bg-[#1a1f26] border border-white/5 rounded-2xl p-4 flex items-center gap-4">
                 <div class="flex gap-2">

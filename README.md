@@ -8,7 +8,7 @@ Bienvenue dans le **Consortium**, votre centre de commande mobile intelligent d�
 Une interface **Masterwork** basée sur le glassmorphism profond, des accents néon et une fluidité absolue. Conçue pour être légère, rapide et ultra-responsive.
 
 ## 🚀 Fonctionnalités Majeures
-- **Explorateur Universel** : Naviguez dans vos disques C: et D: directement depuis votre téléphone.
+- **Explorateur Universel** : Naviguez dans vos disques C: D: E: F: G: directement depuis votre téléphone.
 - **Antigravity Chat** : Un canal direct pour piloter votre PC à distance (lancement de projets, analyse de dossiers).
 - **Le Lab** : Accès rapide à vos projets phares comme *Neural_DAW*, *deep_verdict*, et *vocal_studio*.
 - **PWA Ready** : S'installe comme une application native sur Android et iOS.
