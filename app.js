@@ -79,7 +79,15 @@ class ConsortiumApp {
 
     render() {
         const pageId = this.state.activePage;
+        this.blocksContainer.innerHTML = '';
         
+        // Reset and Apply Grid Layout for Home, list for others
+        if (pageId === 'home') {
+            this.blocksContainer.className = "grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8 pb-32";
+        } else {
+            this.blocksContainer.className = "flex flex-col gap-6 pb-32";
+        }
+
         // Update active states
         [...this.pageList, ...this.bottomNav].forEach(el => {
             const active = el.getAttribute('data-page') === pageId;
