@@ -67,6 +67,14 @@ class ConsortiumApp {
         const closeSidebar = document.getElementById('close-sidebar');
         if (menuToggle) menuToggle.onclick = () => this.sidebar.classList.remove('-translate-x-full');
         if (closeSidebar) closeSidebar.onclick = () => this.sidebar.classList.add('-translate-x-full');
+
+        // Global Click Listener for UI Cleanup
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('block-menu');
+            if (menu && !menu.contains(e.target) && !e.target.closest('button')) {
+                menu.classList.add('hidden');
+            }
+        });
     }
 
     setupNavigation() {
@@ -198,15 +206,20 @@ class ConsortiumApp {
         return `
             <table class="w-full border-collapse border border-white/10 rounded-xl overflow-hidden text-sm">
                 <tr class="bg-white/5">
-                    <th contenteditable="true" class="border border-white/10 p-3 text-left font-bold text-accent">Nom</th>
-                    <th contenteditable="true" class="border border-white/10 p-3 text-left font-bold text-accent">Valeur</th>
+                    <th contenteditable="true" onblur="window.app.saveTable(${index}, 'h1', this.innerText)" class="border border-white/10 p-3 text-left font-bold text-accent">${block.h1 || 'Nom'}</th>
+                    <th contenteditable="true" onblur="window.app.saveTable(${index}, 'h2', this.innerText)" class="border border-white/10 p-3 text-left font-bold text-accent">${block.h2 || 'Valeur'}</th>
                 </tr>
                 <tr>
-                    <td contenteditable="true" class="border border-white/10 p-3 text-gray-400">${block.col1 || ''}</td>
-                    <td contenteditable="true" class="border border-white/10 p-3 text-gray-400">${block.col2 || ''}</td>
+                    <td contenteditable="true" onblur="window.app.saveTable(${index}, 'col1', this.innerText)" class="border border-white/10 p-3 text-gray-400">${block.col1 || ''}</td>
+                    <td contenteditable="true" onblur="window.app.saveTable(${index}, 'col2', this.innerText)" class="border border-white/10 p-3 text-gray-400">${block.col2 || ''}</td>
                 </tr>
             </table>
         `;
+    }
+
+    saveTable(index, field, value) {
+        this.state.notionBlocks[index][field] = value;
+        this.saveToStorage();
     }
 
     toggleTodo(index) {
