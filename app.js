@@ -173,7 +173,7 @@ class ConsortiumApp {
         } else if (block.type === 'todo') {
             contentHtml = `
                 <div class="flex items-center gap-4">
-                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-5 accent-accent" onchange="window.app.toggleTodo(${index})">
+                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-[600px] accent-accent" oninput="window.app.saveTodo(${index})">
                     <span contenteditable="true" class="text-gray-300 outline-none flex-1 ${block.checked ? 'line-through opacity-50' : ''}" placeholder="Tâche...">${block.content}</span>
                 </div>`;
         } else if (block.type === 'table') {
@@ -556,7 +556,7 @@ class ConsortiumApp {
             </div>
             <div class="card-content relative z-10 flex-1"></div>
             <!-- Glow Effect -->
-            <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute -top-24 -right-24 w-48 h-[600px]8 bg-accent/5 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
         `;
         return div;
     }
