@@ -6,6 +6,7 @@ class ConsortiumApp {
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
             activePage: 'home',
             currentPath: 'D:\\lab\\Projets',
+            chatHistory: [],
             pages: {
                 home: { title: 'Dashboard', icon: '🏠' },
                 projects: { title: 'EXPLORER', icon: '📂' },
@@ -98,7 +99,6 @@ class ConsortiumApp {
 
     renderHome() {
         this.pageTitle.innerText = "Bienvenue dans le Consortium";
-        this.blocksContainer.innerHTML = '';
         
         // To-do List Card
         const todoCard = this.createCard('To-do List', '📝');
@@ -200,11 +200,12 @@ class ConsortiumApp {
         mainView.className = "flex-1 flex flex-col overflow-hidden";
         
         // Address Bar (Breadcrumbs)
+        const parentPath = this.state.currentPath.substring(0, this.state.currentPath.lastIndexOf('\\')) || 'D:\\lab';
         const addressBar = document.createElement('div');
         addressBar.className = "p-4 border-b border-white/5 bg-white/5 flex items-center gap-4";
         addressBar.innerHTML = `
             <div class="flex gap-2">
-                <button onclick="window.app.renderProjects('D:\\\\lab')" class="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center text-gray-400 hover:text-white transition-all">↑</button>
+                <button onclick="window.app.renderProjects('${parentPath.replace(/\\/g, '\\\\')}')" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-accent/20 transition-all shadow-inner border border-white/5">↑</button>
             </div>
             <div class="flex-1 bg-black/60 rounded-lg px-4 py-2 text-[11px] font-mono text-gray-100 flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap border border-white/10 shadow-inner">
                 ${this.state.currentPath.split('\\').filter(x => x).map((p, i, arr) => `
@@ -218,16 +219,23 @@ class ConsortiumApp {
         fileList.className = "flex-1 overflow-y-auto no-scrollbar pb-10";
         
         let currentFolders = [];
-        const pathLower = this.state.currentPath.toLowerCase();
+        const pathUpper = this.state.currentPath.toUpperCase().trim();
         
-        if (pathLower === 'd:\\lab') {
-            currentFolders = ["Projets"];
-        } else if (pathLower.includes('projets')) {
-            currentFolders = ["Neural_DAW", "lutherie_app", "vocal_studio", "dj_hybride", "bleachbit-dashboard", "cam_spy"];
-        } else if (pathLower === 'c:\\') {
-            currentFolders = ["Windows", "Program Files", "Users"];
+        // Deep Navigation Logic (Mock)
+        if (pathUpper === 'D:\\LAB' || pathUpper === 'D:') {
+            currentFolders = ["Projets", "Archives", "Scripts", "Backups"];
+        } else if (pathUpper.includes('PROJETS')) {
+            if (pathUpper.endsWith('PROJETS')) {
+                currentFolders = ["Neural_DAW", "Lutherie_App", "Vocal_Studio", "DJ_Hybride", "Bleachbit-Dashboard", "Cam_Spy"];
+            } else {
+                currentFolders = ["src", "dist", "assets", "README.md", "config.json"];
+            }
+        } else if (pathUpper === 'C:\\' || pathUpper === 'C:') {
+            currentFolders = ["Windows", "Program Files", "Users", "Temp"];
+        } else if (pathUpper.includes('USERS')) {
+            currentFolders = ["gasmar", "Public", "Default"];
         } else {
-            currentFolders = ["Projets", "Apps", "Work"];
+            currentFolders = ["Documents", "Images", "Bureau"];
         }
 
         const table = document.createElement('table');
@@ -268,7 +276,6 @@ class ConsortiumApp {
 
     renderTasks() {
         this.pageTitle.innerText = "Tasks Management";
-        this.blocksContainer.innerHTML = '';
         const card = this.createCard('Journal de bord', '📋');
         card.querySelector('.card-content').innerHTML = `<p class="text-gray-500 italic">Vos tâches sont synchronisées avec Antigravity.</p>`;
         this.blocksContainer.appendChild(card);
@@ -304,7 +311,6 @@ class ConsortiumApp {
 
     renderAI() {
         this.pageTitle.innerText = "Antigravity Assistant";
-        this.blocksContainer.innerHTML = '';
         
         const chatCard = this.createCard('Dialogue Antigravity', '🤖');
         chatCard.classList.add('lg:col-span-2');
@@ -325,12 +331,21 @@ class ConsortiumApp {
             </div>
             
             <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6 no-scrollbar">
-                <div class="flex flex-col gap-2 max-w-[85%]">
-                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300 leading-relaxed shadow-sm">
-                        Bonjour ! Je suis Antigravity. Je suis prêt à gérer votre Lab. Dites-moi quel projet lancer ou quel dossier explorer.
+                ${this.state.chatHistory.length === 0 ? `
+                    <div class="flex flex-col gap-2 max-w-[85%]">
+                        <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300 leading-relaxed shadow-sm">
+                            Bonjour ! Je suis Antigravity. Je suis prêt à gérer votre Lab. Dites-moi quel projet lancer ou quel dossier explorer.
+                        </div>
+                        <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
                     </div>
-                    <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
-                </div>
+                ` : this.state.chatHistory.map(msg => `
+                    <div class="flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-2 max-w-[85%] ${msg.role === 'user' ? 'self-end ml-auto' : ''}">
+                        <div class="p-4 ${msg.role === 'user' ? 'bg-accent text-white rounded-tr-none' : 'bg-white/5 border border-white/5 text-gray-300 rounded-tl-none'} rounded-2xl text-sm shadow-lg ${msg.role === 'user' ? 'shadow-accent/20' : ''}">
+                            ${msg.text}
+                        </div>
+                        <span class="text-[10px] text-gray-600 ${msg.role === 'user' ? 'pr-2' : 'pl-2'}">${msg.role === 'user' ? 'VOUS' : 'ANTIGRAVITY'} • ${msg.time}</span>
+                    </div>
+                `).join('')}
             </div>
             
             <div class="space-y-4 relative z-[60] bg-[#0b0e14] pb-10">
@@ -354,39 +369,29 @@ class ConsortiumApp {
         const sendMessage = () => {
             if (!input.value.trim()) return;
             const text = input.value;
-            
-            // Add user message to UI
-            const userMsg = document.createElement('div');
-            userMsg.className = 'flex flex-col items-end gap-2 max-w-[85%] self-end ml-auto';
-            userMsg.innerHTML = `
-                <div class="p-4 bg-accent text-white rounded-2xl rounded-tr-none text-sm shadow-lg shadow-accent/20">
-                    ${text}
-                </div>
-                <span class="text-[10px] text-gray-600 pr-2">VOUS • Maintenant</span>
-            `;
-            messagesContainer.appendChild(userMsg);
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            this.state.chatHistory.push({ role: 'user', text, time });
+            this.renderAI();
             
             input.value = '';
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            this.saveToStorage();
 
-            // Use actual command handler
             setTimeout(() => {
                 const response = this.handleCommand(text);
-                const botMsg = document.createElement('div');
-                botMsg.className = 'flex flex-col gap-2 max-w-[85%]';
-                botMsg.innerHTML = `
-                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300">
-                        ${response}
-                    </div>
-                    <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
-                `;
-                messagesContainer.appendChild(botMsg);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                this.state.chatHistory.push({ role: 'bot', text: response, time: botTime });
+                this.renderAI();
+                this.saveToStorage();
             }, 1000);
         };
 
         if (sendBtn) sendBtn.onclick = sendMessage;
-        if (input) input.onkeydown = (e) => e.key === 'Enter' && sendMessage();
+        if (input) {
+            input.onkeydown = (e) => e.key === 'Enter' && sendMessage();
+            // Auto-scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     }
 
     handleCommand(cmd) {
