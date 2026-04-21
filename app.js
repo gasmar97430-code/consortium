@@ -116,6 +116,9 @@ class ConsortiumApp {
 
         // Antigravity Direct Chat Card
         this.renderAI();
+
+        // Masterwork Gallery
+        this.renderGallery();
     }
 
         // Project Progress Card
@@ -250,6 +253,34 @@ class ConsortiumApp {
         const card = this.createCard('Journal de bord', '📋');
         card.querySelector('.card-content').innerHTML = `<p class="text-gray-500 italic">Vos tâches sont synchronisées avec Antigravity.</p>`;
         this.blocksContainer.appendChild(card);
+    }
+
+    renderGallery() {
+        const galleryCard = this.createCard('Visual Gallery', '🖼️');
+        const galleryGrid = document.createElement('div');
+        galleryGrid.className = 'grid grid-cols-2 gap-4 mt-2';
+        
+        const images = [
+            { url: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400', title: 'Neural Space' },
+            { url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400', title: 'Lab Core' },
+            { url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=400', title: 'Vocal Studio' },
+            { url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400', title: 'Design System' }
+        ];
+
+        images.forEach(img => {
+            const item = document.createElement('div');
+            item.className = 'relative group rounded-2xl overflow-hidden aspect-square border border-white/5 shadow-xl transition-all hover:border-accent/30';
+            item.innerHTML = `
+                <img src="${img.url}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                    <p class="text-[10px] font-bold text-white uppercase tracking-widest">${img.title}</p>
+                </div>
+            `;
+            galleryGrid.appendChild(item);
+        });
+
+        galleryCard.querySelector('.card-content').appendChild(galleryGrid);
+        this.blocksContainer.appendChild(galleryCard);
     }
 
     renderAI() {
