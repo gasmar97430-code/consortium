@@ -1,6 +1,6 @@
 class ConsortiumApp {
     constructor() {
-        this.version = "7.7";
+        this.version = "9.0";
         this.checkVersion();
 
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
@@ -350,13 +350,14 @@ class ConsortiumApp {
             input.value = '';
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Simple Auto-Response
+            // Use actual command handler
             setTimeout(() => {
+                const response = this.handleCommand(text);
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex flex-col gap-2 max-w-[85%]';
                 botMsg.innerHTML = `
                     <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300">
-                        Analyse de votre commande en cours... Tout est synchronisé dans le Consortium.
+                        ${response}
                     </div>
                     <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
                 `;
@@ -370,14 +371,19 @@ class ConsortiumApp {
     }
 
     handleCommand(cmd) {
-        if (cmd === 'lab') {
-            this.state.activePage = 'projects';
-        } else if (cmd === 'Neural_DAW' || cmd === 'vocal_studio') {
-            this.state.activePage = 'projects';
-            // On pourrait filtrer ou surligner ici
+        const cleanCmd = cmd.toUpperCase().trim();
+        
+        if (cleanCmd === 'YES' || cleanCmd === 'ACCEPT' || cleanCmd === 'RUN') {
+            return "✅ ORDRE REÇU. Initialisation de la séquence sur le PC local... [SYNC_SUCCESS]";
         }
-        this.render();
-        this.saveToStorage();
+
+        if (cleanCmd === 'LAB' || cleanCmd === 'EXPLORER') {
+            this.state.activePage = 'projects';
+            this.render();
+            return "📂 Navigation vers l'EXPLORER active.";
+        }
+
+        return "🤖 Commande reçue : " + cmd + ". Analyse en cours...";
     }
 
     createCard(title, icon) {

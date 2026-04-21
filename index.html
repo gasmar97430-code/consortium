@@ -16,10 +16,6 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    pages: {
-                        home: { title: 'Dashboard', icon: '🏠' },
-                        projects: { title: 'EXPLORER', icon: '📂' },
-                    },
                     colors: {
                         dark: '#0b0e14',
                         accent: '#7d5fff',
@@ -244,15 +240,7 @@
             </button>
         </nav>
     </main>
-
-    <!-- Block Menu -->
-    <div id="block-menu" class="fixed hidden z-[100] w-48 bg-[#1c2128] border border-white/10 rounded-xl shadow-2xl p-2 animate-in fade-in zoom-in duration-200">
-        <div class="menu-item p-2 hover:bg-white/5 rounded-lg cursor-pointer flex items-center gap-3 text-sm" data-type="text"><span>📝</span> Texte</div>
-        <div class="menu-item p-2 hover:bg-white/5 rounded-lg cursor-pointer flex items-center gap-3 text-sm" data-type="todo"><span>✅</span> To-do List</div>
-        <div class="menu-item p-2 hover:bg-white/5 rounded-lg cursor-pointer flex items-center gap-3 text-sm" data-type="header"><span>H1</span> Titre</div>
-        <div class="menu-item p-2 hover:bg-white/5 rounded-lg cursor-pointer flex items-center gap-3 text-sm" data-type="table"><span>📊</span> Tableau</div>
-    </div>
-
+    
     <!-- PWA Registration -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -263,6 +251,6 @@
             });
         }
     </script>
-    <script src="app.js?v=3.6"></script>
+    <script src="app.js?v=9.0"></script>
 </body>
 </html>

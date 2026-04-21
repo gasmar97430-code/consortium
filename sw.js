@@ -1,8 +1,7 @@
-const CACHE_NAME = 'consortium-v4.9';
+const CACHE_NAME = 'consortium-v9.0';
 const ASSETS = [
   './',
   './index.html',
-  './style.css',
   './app.js',
   './manifest.json',
   'https://cdn.tailwindcss.com'
