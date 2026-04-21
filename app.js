@@ -1,6 +1,6 @@
 class ConsortiumApp {
     constructor() {
-        this.version = "13.0";
+        this.version = "12.5";
         this.checkVersion();
 
         this.state = JSON.parse(localStorage.getItem('consortium_data')) || {
@@ -173,7 +173,7 @@ class ConsortiumApp {
         } else if (block.type === 'todo') {
             contentHtml = `
                 <div class="flex items-center gap-4">
-                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-5 accent-accent" oninput="window.app.saveTodo(${index})">
+                    <input type="checkbox" ${block.checked ? 'checked' : ''} class="w-5 h-[600px] accent-accent" oninput="window.app.saveTodo(${index})">
                     <span contenteditable="true" class="text-gray-300 outline-none flex-1 ${block.checked ? 'line-through opacity-50' : ''}" placeholder="Tâche...">${block.content}</span>
                 </div>`;
         } else if (block.type === 'table') {
@@ -237,14 +237,10 @@ class ConsortiumApp {
         this.saveToStorage();
     }
 
-    saveTodo(index) {
-        this.state.notionBlocks[index].checked = !this.state.notionBlocks[index].checked;
-        this.saveToStorage();
-        this.render();
-    }
-
     toggleTodo(index) {
-        this.saveTodo(index);
+        this.state.notionBlocks[index].checked = !this.state.notionBlocks[index].checked;
+        this.render();
+        this.saveToStorage();
     }
 
     showBlockMenu(e, index = null) {
@@ -357,17 +353,21 @@ class ConsortiumApp {
         let currentFolders = [];
         const pathUpper = this.state.currentPath.toUpperCase().trim();
         
-        // Deep Navigation Logic (Improved)
-        const currentPath = this.state.currentPath;
-        if (currentPath === 'D:\\lab' || currentPath === 'D:') {
-            currentFolders = ["Projets", "Archives", "Scripts", "Backups", "Consortium"];
-        } else if (currentPath.toUpperCase().includes('PROJETS')) {
-            currentFolders = ["Neural_DAW", "Lutherie_App", "Vocal_Studio", "DJ_Hybride", "Bleachbit-Dashboard", "Cam_Spy", "Consortium_PWA"];
-        } else if (currentPath.toUpperCase() === 'C:\\' || currentPath.toUpperCase() === 'C:') {
-            currentFolders = ["Windows", "Program Files", "Users", "Temp", "Antigravity_Logs"];
+        // Deep Navigation Logic (Mock)
+        if (pathUpper === 'D:\\LAB' || pathUpper === 'D:') {
+            currentFolders = ["Projets", "Archives", "Scripts", "Backups"];
+        } else if (pathUpper.includes('PROJETS')) {
+            if (pathUpper.endsWith('PROJETS')) {
+                currentFolders = ["Neural_DAW", "Lutherie_App", "Vocal_Studio", "DJ_Hybride", "Bleachbit-Dashboard", "Cam_Spy"];
+            } else {
+                currentFolders = ["src", "dist", "assets", "README.md", "config.json"];
+            }
+        } else if (pathUpper === 'C:\\' || pathUpper === 'C:') {
+            currentFolders = ["Windows", "Program Files", "Users", "Temp"];
+        } else if (pathUpper.includes('USERS')) {
+            currentFolders = ["gasmar", "Public", "Default"];
         } else {
-            // Default to showing subfolders if any (mocked for now but more varied)
-            currentFolders = ["src", "dist", "assets", "README.md", "package.json", "index.html"];
+            currentFolders = ["Documents", "Images", "Bureau"];
         }
 
         const table = document.createElement('table');
