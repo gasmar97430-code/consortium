@@ -273,6 +273,47 @@ class ConsortiumApp {
         
         chatCard.querySelector('.card-content').appendChild(chatContainer);
         this.blocksContainer.appendChild(chatCard);
+
+        // Bind Chat Logic
+        const input = document.getElementById('ai-input');
+        const sendBtn = document.getElementById('ai-send');
+        const messagesContainer = document.getElementById('chat-messages');
+
+        const sendMessage = () => {
+            if (!input.value.trim()) return;
+            const text = input.value;
+            
+            // Add user message to UI
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex flex-col items-end gap-2 max-w-[85%] self-end ml-auto';
+            userMsg.innerHTML = `
+                <div class="p-4 bg-accent text-white rounded-2xl rounded-tr-none text-sm shadow-lg shadow-accent/20">
+                    ${text}
+                </div>
+                <span class="text-[10px] text-gray-600 pr-2">VOUS • Maintenant</span>
+            `;
+            messagesContainer.appendChild(userMsg);
+            
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Simple Auto-Response
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'flex flex-col gap-2 max-w-[85%]';
+                botMsg.innerHTML = `
+                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none text-sm text-gray-300">
+                        Analyse de votre commande en cours... Tout est synchronisé dans le Consortium.
+                    </div>
+                    <span class="text-[10px] text-gray-600 pl-2">ANTIGRAVITY • Maintenant</span>
+                `;
+                messagesContainer.appendChild(botMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1000);
+        };
+
+        if (sendBtn) sendBtn.onclick = sendMessage;
+        if (input) input.onkeydown = (e) => e.key === 'Enter' && sendMessage();
     }
 
     handleCommand(cmd) {
