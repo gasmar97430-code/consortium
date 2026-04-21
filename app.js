@@ -194,12 +194,12 @@ class ConsortiumApp {
         const todoList = document.createElement('div');
         todoList.className = 'space-y-4';
         const tasks = [
-            { text: 'Collater une commentiale', checked: true, tag: '🚩' },
-            { text: 'Eviter des missions', checked: false, tag: '4 mon', tagColor: 'text-pink-500' },
-            { text: 'Resquer les doaveloppnoets', checked: false, tag: '🕒 12 mar', tagColor: 'text-gray-500' },
-            { text: 'Contir la scontent', checked: false, tag: '🕒 23 mas', tagColor: 'text-gray-500' },
-            { text: 'Deliter les profiction', checked: false, tag: '🕒 30 min', tagColor: 'text-gray-500' },
-            { text: 'Activer un fection', checked: false, tag: '🚩' }
+            { text: 'Finaliser la structure de données', checked: true, tag: '🚩' },
+            { text: 'Optimisation du moteur de rendu', checked: false, tag: 'En cours', tagColor: 'text-pink-500' },
+            { text: 'Audit de sécurité des modules', checked: false, tag: '🕒 12 Avr', tagColor: 'text-gray-500' },
+            { text: 'Déploiement de la version Pro', checked: false, tag: '🕒 23 Avr', tagColor: 'text-gray-500' },
+            { text: 'Mise à jour de la documentation', checked: false, tag: '🕒 30 min', tagColor: 'text-gray-500' },
+            { text: 'Validation des tests unitaires', checked: false, tag: '🚩' }
         ];
         tasks.forEach(t => {
             const item = document.createElement('div');
@@ -216,7 +216,7 @@ class ConsortiumApp {
         
         const footerInput = document.createElement('div');
         footerInput.className = 'mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-gray-600';
-        footerInput.innerHTML = `<span class="text-xs">Actions de mtrts...</span> <span class="text-sm">→</span>`;
+        footerInput.innerHTML = `<span class="text-xs italic">Ajouter une action rapide...</span> <span class="text-sm">→</span>`;
         
         todoCard.querySelector('.card-content').appendChild(todoList);
         todoCard.querySelector('.card-content').appendChild(footerInput);
@@ -227,9 +227,9 @@ class ConsortiumApp {
         const progressList = document.createElement('div');
         progressList.className = 'space-y-8';
         const projects = [
-            { name: 'Current project', progress: 80 },
-            { name: 'Project progress', progress: 20 },
-            { name: 'Dainert project', progress: 75 }
+            { name: 'Architecture Système', progress: 80 },
+            { name: 'Interface Utilisateur', progress: 20 },
+            { name: 'Développement API', progress: 75 }
         ];
         projects.forEach(p => {
             const item = document.createElement('div');
@@ -247,7 +247,7 @@ class ConsortiumApp {
         
         const actionBtn = document.createElement('button');
         actionBtn.className = 'mt-10 w-fit px-6 py-3 bg-accent/20 border border-accent/20 text-accent rounded-2xl text-xs font-bold flex items-center gap-3 hover:bg-accent hover:text-white transition-all shadow-lg shadow-accent/10';
-        actionBtn.innerHTML = `<span class="text-lg">+</span> Recuperer`;
+        actionBtn.innerHTML = `<span class="text-lg">+</span> Commander`;
         
         progressCard.querySelector('.card-content').appendChild(progressList);
         progressCard.querySelector('.card-content').appendChild(actionBtn);
