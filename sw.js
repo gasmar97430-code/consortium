@@ -1,4 +1,4 @@
-const CACHE_NAME = 'consortium-v1';
+const CACHE_NAME = 'consortium-v2.5';
 const ASSETS = [
   './',
   './index.html',
